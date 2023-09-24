@@ -1,0 +1,20 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "928fd30e3b65c89a5ec0706c0ea4ab2292a0dad6c77245d7fdf758ab68f5db93"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.11"
+        },
+        "sources": [
+            {
+                "name": "pip_conf_index_:env:",
+                "url": "https://nodis:0Vi9m1KYo7Py@pypi.nodis.com.br/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {},
+    "develop": {}
+}
