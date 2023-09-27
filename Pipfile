@@ -1,9 +1,10 @@
 [[source]]
-url = "https://nodis:0Vi9m1KYo7Py@pypi.nodis.com.br/simple"
 verify_ssl = true
 name = "pip_conf_index_:env:"
 
 [packages]
+sqlalchemy = {version = "*", index = "pip_conf_index_:env:"}
+pymongo = {version = "*", index = "pip_conf_index_:env:"}
 
 [dev-packages]
 
