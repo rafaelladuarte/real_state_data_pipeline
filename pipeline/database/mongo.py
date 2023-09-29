@@ -8,7 +8,7 @@ class Mongo:
         self.db = cli["olist_raw"]
 
     def list_collections(self) -> list:
-        return []
+        return self.db.list_collection_names()
 
     def get_data(self, collection: str) -> list[dict]:
         cursor = self.db[collection].find()

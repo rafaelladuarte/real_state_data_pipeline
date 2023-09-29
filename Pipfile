@@ -5,6 +5,7 @@ name = "pip_conf_index_:env:"
 [packages]
 sqlalchemy = {version = "*", index = "pip_conf_index_:env:"}
 pymongo = {version = "*", index = "pip_conf_index_:env:"}
+psycopg2-binary = {version = "*", index = "pip_conf_index_:env:"}
 
 [dev-packages]
 
