@@ -1,13 +1,17 @@
 [[source]]
+url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pip_conf_index_:env:"
+name = "pypi"
 
 [packages]
-sqlalchemy = {version = "*", index = "pip_conf_index_:env:"}
-pymongo = {version = "*", index = "pip_conf_index_:env:"}
-psycopg2-binary = {version = "*", index = "pip_conf_index_:env:"}
+pymongo = "*"
+pandas = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+sqlalchemy-utils = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.10"
+python_full_version = "3.10.12"
