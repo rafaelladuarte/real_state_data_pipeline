@@ -1,4 +1,4 @@
-# Anotações para execução e documentação
+# Anotações Técnicas para elaboração da documentação e execução do script
 
 - Para o ambiente virtual conseguir ler a pasta project como um biblioteca python deve configurar o PTHONPATH
 ~~~bash
