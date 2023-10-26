@@ -1,4 +1,17 @@
-version: '3.1'
+version: '3.7'
+
+# ====================================== AIRFLOW ENVIRONMENT VARIABLES =======================================
+x-environment: &airflow_environment
+  - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+  - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
+  - AIRFLOW__CORE__LOAD_EXAMPLES=False
+  - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://username:password@postgres:5432/airflow
+  - AIRFLOW__CORE__STORE_DAG_CODE=True
+  - AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
+  - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+
+x-airflow-image: &airflow_image apache/airflow
+# ====================================== /AIRFLOW ENVIRONMENT VARIABLES ======================================
 
 services:
 
@@ -25,15 +38,16 @@ services:
 
     postgres:
         image: postgres
-        container_name: local_pgdb
+        container_name: postgres
         restart: always
         ports:
-            - "5432:5432"
+            - "5432:5432" # Para o banco de dados "airflow"
+            - "5433:5432" # Para o banco de dados "olist"
         environment:
             POSTGRES_USER: username
             POSTGRES_PASSWORD: password
-        # volumes:
-        #     - pgdata:/var/lib/postgresql/data
+            POSTGRES_DB_OLIST: olist
+            POSTGRES_DB_AIRFLOW: airflow
 
     pgadmin:
         image: dpage/pgadmin4
@@ -45,6 +59,38 @@ services:
             PGADMIN_DEFAULT_EMAIL: admin@email.com
             PGADMIN_DEFAULT_PASSWORD: admin
 
-# volumes:
-#     pgdata:
-#     mgdata:
+    init:
+        image: *airflow_image
+        depends_on:
+            - postgres
+        environment: *airflow_environment
+        entrypoint: /bin/bash
+        command: -c 'airflow db init && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
+
+    webserver:
+        container_name: aiflow-wevserver
+        image: *airflow_image
+        restart: always
+        depends_on:
+            - postgres
+        ports:
+            - "8080:8080"
+        volumes:
+            - logs:/opt/airflow/logs
+        environment: *airflow_environment
+        command: webserver
+
+    scheduler:
+        container_name: airflow-scheduler
+        image: *airflow_image
+        restart: always
+        depends_on:
+            - postgres
+        volumes:
+            - logs:/opt/airflow/logs
+            - ./dags:/opt/airflow/dags
+        environment: *airflow_environment
+        command: scheduler
+
+volumes:
+  logs:
