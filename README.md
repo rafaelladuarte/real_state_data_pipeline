@@ -51,15 +51,32 @@ Os dados estão disponíveis na página do Kaggle:https://www.kaggle.com/dataset
 ## Etapas do projeto
 
 ### Etapa 1 - Extração e Carregamento
-- [ ] Crie instancias local do MongoDB, Mongo-Express, PostgreSQL, PgAdmin4 e Apache Airflow com o docker-compose
-- [ ] Armazene os dados dos arquivos csv em uma collection do Mongo.
-- [ ] Mapeia os dados brutos das collection do Mongo
-- [ ] Transfira os dados mapeados para tabelas no PostgreSQL
-- [ ] Automatize a pipeline de carregameto dos dados brutos utilizando o Apache Airflow.
-
+- [x] Crie instancias local do MongoDB, Mongo-Express, PostgreSQL, PgAdmin4 e Apache Airflow
+- [x] Armazenar dados brutos no MongoDB
+- [x] Mapear e Transfir os dados para o PostgreSQL
+      
 ### Etapa 2 - Transformação
-
+- [ ] Identificar Entidades, Relacionamentos e Dimensões
+- [ ] Criar do Modelo Entidade-Relacionamento
+- [ ] Analisar os Esquemas de Banco de Dados
+- [ ] Criar Novo Schema no Banco de Dados
+- [ ] Criar Consultas e Views dos dados
+      
 ### Etapa 3 - Análise e Visualização
+- [ ] Análise Exploratória
+- [ ] Desenvolvimento de Métricas e KPIs
+- [ ] Desenvolvimento de Modelos Analíticos (se aplicavel)
+- [ ] Desenvolvimento de Dashboards e Relatórios
+      
+### Etapa 4 - Automatização (Apache Airflow)
+- [ ] Automatize a pipeline da Etapa 1
+- [ ] Automatize a pipeline da Etapa 2
+- [ ] Automatize a pipeline da Etapa 3
+      
+### Etapa 5 - Documentação
+- [ ] Validação dos Resultados
+- [ ] Iteração e Ajuste
+- [ ] Documentação
 
 ## Observações 
 
