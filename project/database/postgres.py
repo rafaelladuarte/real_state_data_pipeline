@@ -1,5 +1,6 @@
 from sqlalchemy_utils import create_database
 from sqlalchemy import create_engine
+from sqlalchemy.schema import CreateSchema
 
 import pandas as pd
 
@@ -18,7 +19,16 @@ class PostreSQL:
         create_database(engine.url)
         engine.dispose()
 
-    def post_data(self, collection_name: str, documents: list[dict]) -> None:
+    def _create_schema(self, schema_name) -> None:
+        engine = create_engine(self._uri + "/olist")
+
+        with engine.connect() as connection:
+            connection.execute(CreateSchema(schema_name, if_not_exists=True))
+            connection.commit()
+
+    def post_dataframe(
+        self, schema_name: str, collection_name: str, documents: list[dict]
+    ) -> None:
         """
         Publica dados em uma coleção do banco de dados PostgreSQL.
 
@@ -29,12 +39,15 @@ class PostreSQL:
             na coleção.
         """
         engine = create_engine(self._uri + "/olist")
+
         df = pd.DataFrame(documents)
         df.drop(columns=["_id"], inplace=True)
         df.to_sql(
             name=collection_name,
             con=engine,
-            if_exists='replace',
-            index=False
+            if_exists="replace",
+            index=False,
+            schema=schema_name,
         )
+
         engine.dispose()
