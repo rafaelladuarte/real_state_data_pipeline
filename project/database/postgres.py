@@ -1,6 +1,7 @@
 from sqlalchemy_utils import create_database
 from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateSchema
+from sqlalchemy import text
 
 import pandas as pd
 
@@ -24,6 +25,12 @@ class PostreSQL:
 
         with engine.connect() as connection:
             connection.execute(CreateSchema(schema_name, if_not_exists=True))
+            connection.commit()
+
+    def _create_extesion_uuid(self) -> None:
+        engine = create_engine(self._uri + "/olist")
+        with engine.connect() as connection:
+            connection.execute(text('CREATE EXTENSION IF NOT EXISTS "uuid-ossp'))
             connection.commit()
 
     def post_dataframe(
@@ -51,3 +58,6 @@ class PostreSQL:
         )
 
         engine.dispose()
+
+    def execute_query(self):
+        return None
