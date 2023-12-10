@@ -56,10 +56,10 @@ Os dados estão disponíveis na página do Kaggle:https://www.kaggle.com/dataset
 - [x] Mapear e Transfir os dados para o PostgreSQL
       
 ### Etapa 2 - Transformação
-- [ ] Identificar Entidades, Relacionamentos e Dimensões
+- [x] Identificar Entidades, Relacionamentos e Dimensões
 - [ ] Criar do Modelo Entidade-Relacionamento
 - [ ] Analisar os Esquemas de Banco de Dados
-- [ ] Criar Novo Schema no Banco de Dados
+- [x] Criar Novo Schema no Banco de Dados
 - [ ] Criar Consultas e Views dos dados
       
 ### Etapa 3 - Análise e Visualização
