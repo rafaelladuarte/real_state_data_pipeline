@@ -1,4 +1,4 @@
-CREATE TABLE olist.star_schema.reviews (
+CREATE TABLE IF NOT EXISTS olist.star_schema.reviews (
 	review_id UUID PRIMARY KEY,
 	review_order_id UUID,
 	review_score INT,

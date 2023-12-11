@@ -1,4 +1,4 @@
-CREATE TABLE olist.star_schema.product (
+CREATE TABLE IF NOT EXISTS olist.star_schema.products (
 	product_id UUID PRIMARY KEY,
 	product_category_id UUID,
 	product_name_tm INT,

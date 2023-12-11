@@ -1,4 +1,4 @@
-CREATE TABLE olist.star_schema.geolocation (
+CREATE TABLE IF NOT EXISTS olist.star_schema.geolocation (
 	geolocation_id UUID PRIMARY KEY,
 	zip_code_prefix INT,
 	latitude DOUBLE PRECISION,

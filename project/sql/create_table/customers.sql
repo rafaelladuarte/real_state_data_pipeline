@@ -1,4 +1,4 @@
-CREATE TABLE olist.star_schema.customers (
+CREATE TABLE IF NOT EXISTS olist.star_schema.customers (
 	customer_id UUID PRIMARY KEY,
 	customer_name VARCHAR(100),
 	customer_geolocation_id UUID,
