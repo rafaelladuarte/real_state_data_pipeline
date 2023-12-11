@@ -1,4 +1,5 @@
 from sqlalchemy_utils import create_database
+from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy import text
@@ -16,11 +17,19 @@ class PostreSQL:
         """
         Cria um banco de dados no PostgreSQL.
         """
+
         engine = create_engine(self._uri + "/olist")
         create_database(engine.url)
         engine.dispose()
 
-    def _create_schema(self, schema_name) -> None:
+    def _create_schema(self, schema_name: str) -> None:
+        """
+        Cria um esquema de dados no banco de dados olist
+
+        Args:
+            schema_name (str): nome do schema que será criado
+        """
+
         engine = create_engine(self._uri + "/olist")
 
         with engine.connect() as connection:
@@ -28,9 +37,14 @@ class PostreSQL:
             connection.commit()
 
     def _create_extesion_uuid(self) -> None:
+        """
+        Cria a extensão que permite o uso do tipo de dado UUID
+        """
+
         engine = create_engine(self._uri + "/olist")
+
         with engine.connect() as connection:
-            connection.execute(text('CREATE EXTENSION IF NOT EXISTS "uuid-ossp'))
+            connection.execute(text('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'))
             connection.commit()
 
     def post_dataframe(
@@ -45,6 +59,7 @@ class PostreSQL:
             documents (list[dict]): dicionário de documentos a serem postados
             na coleção.
         """
+
         engine = create_engine(self._uri + "/olist")
 
         df = pd.DataFrame(documents)
@@ -59,5 +74,49 @@ class PostreSQL:
 
         engine.dispose()
 
-    def execute_query(self):
+    def execute_query_direct(
+        self,
+        table: str,
+        query: str,
+    ):
+        """
+        Executa uma query direta no SQL no banco de dados olist.
+
+        Arg:
+            table (str): nome da tabela a ser consultada.
+            query (str): consulta a ser executada
+        """
+        try:
+            engine = create_engine(self._uri + "/olist")
+            with engine.connect() as connection:
+                connection.execute(text(query))
+                connection.commit()
+            print(f"Sucesso ao executar consultas SQL da tabela {table}")
+        except Exception as e:
+            print(f"Erro ao executar consultas SQL da tabela {table}: {e}")
+
+        return None
+
+    def execute_query_transaction(
+        self,
+        table: str,
+        query: str,
+    ):
+        """
+        Executa uma query que envolvem transações e manipulação de objetos
+        no SQL no banco de dados olist.
+
+        Arg:
+            table (str): nome da tabela a ser consultada.
+            query (str): consulta a ser executada
+        """
+        try:
+            engine = create_engine(self._uri + "/olist")
+            with Session(engine) as session:
+                session.execute(text(query))
+                session.commit()
+            print(f"Sucesso ao executar consultas SQL da tabela {table}")
+        except Exception as e:
+            print(f"Erro ao executar consultas SQL da tabela {table}: {e}")
+
         return None

@@ -1,7 +1,10 @@
 from project.database.postgres import PostreSQL
+from pathlib import Path
+
+import re
 
 
-def normalize_data():
+def insert_data_to_new_tables():
     psql = PostreSQL()
     list_table = [
         "geolocation",
@@ -16,8 +19,11 @@ def normalize_data():
     ]
 
     for table in list_table:
-        psql.execute_query()
+        file = Path(f"./project/sql/insert_table/{table}.sql")
+        sql = file.read_text()
+        query = re.sub(r"[\n\t]", " ", sql)
+        psql.execute_query_transaction(table, query)
 
 
 if __name__ == "__main__":
-    normalize_data()
+    insert_data_to_new_tables()

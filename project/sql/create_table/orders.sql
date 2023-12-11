@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS olist.star_schema.orders (
-	order_id UUID PRIMARY KEY,
+	order_unique_id UUID PRIMARY KEY,
+	order_id UUID,
 	customer_id UUID,
 	seller_id UUID,
 	product_id UUID, 
@@ -11,6 +12,7 @@ CREATE TABLE IF NOT EXISTS olist.star_schema.orders (
 	order_dt TIMESTAMP,
 	order_approved_dt TIMESTAMP,
 	order_sent_dt TIMESTAMP,
+	order_received_dt TIMESTAMP,
 	order_delivery_forecast_dt TIMESTAMP,
 	FOREIGN KEY (customer_id) REFERENCES olist.star_schema.customers (customer_id),
 	FOREIGN KEY (seller_id) REFERENCES olist.star_schema.sellers (seller_id),
