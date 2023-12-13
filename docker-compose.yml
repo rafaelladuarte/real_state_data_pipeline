@@ -1,16 +1,16 @@
 version: '3.7'
 
 # ====================================== AIRFLOW ENVIRONMENT VARIABLES =======================================
-# x-environment: &airflow_environment
-#   - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-#   - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
-#   - AIRFLOW__CORE__LOAD_EXAMPLES=False
-#   - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://username:password@postgres:5433/airflow
-#   - AIRFLOW__CORE__STORE_DAG_CODE=True
-#   - AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
-#   - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+x-environment: &airflow_environment
+  - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+  - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
+  - AIRFLOW__CORE__LOAD_EXAMPLES=False
+  - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://username:password@postgres:5432/airflow
+  - AIRFLOW__CORE__STORE_DAG_CODE=True
+  - AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
+  - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
 
-# x-airflow-image: &airflow_image apache/airflow
+x-airflow-image: &airflow_image apache/airflow
 # ====================================== /AIRFLOW ENVIRONMENT VARIABLES ======================================
 
 services:
@@ -41,14 +41,14 @@ services:
         container_name: postgres
         restart: always
         ports:
-            # - "5433:5433" # Para o banco de dados "airflow"
-            - "5432:5432" # Para o banco de dados "olist"
+            - "5432:5432"
         environment:
             POSTGRES_USER: username
             POSTGRES_PASSWORD: password
-            POSTGRES_DB_OLIST: olist
-            # POSTGRES_DB_AIRFLOW: airflow
-
+            POSTGRES_DB: airflow
+        networks: 
+            - my_network
+    
     pgadmin:
         image: dpage/pgadmin4
         container_name: pgadmin4_container
@@ -59,38 +59,45 @@ services:
             PGADMIN_DEFAULT_EMAIL: admin@email.com
             PGADMIN_DEFAULT_PASSWORD: admin
 
-    # init:
-    #     image: *airflow_image
-    #     depends_on:
-    #         - postgres
-    #     environment: *airflow_environment
-    #     entrypoint: /bin/bash
-    #     command: -c 'airflow db init && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
+    init:
+        image: *airflow_image
+        depends_on:
+            - postgres
+        environment: *airflow_environment
+        entrypoint: /bin/bash
+        command: bash -c 'pip install apache-airflow && airflow db init && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
 
-    # webserver:
-    #     container_name: aiflow-wevserver
-    #     image: *airflow_image
-    #     restart: always
-    #     depends_on:
-    #         - postgres
-    #     ports:
-    #         - "8080:8080"
-    #     volumes:
-    #         - logs:/opt/airflow/logs
-    #     environment: *airflow_environment
-    #     command: webserver
+    webserver:
+        container_name: airflow-webserver
+        image: *airflow_image
+        restart: always
+        depends_on:
+            - postgres
+        ports:
+            - "8080:8080"
+        volumes:
+            - logs:/opt/airflow/logs
+        environment: *airflow_environment
+        command: bash -c "airflow db init && airflow webserver"
+        networks: 
+            - my_network
 
-    # scheduler:
-    #     container_name: airflow-scheduler
-    #     image: *airflow_image
-    #     restart: always
-    #     depends_on:
-    #         - postgres
-    #     volumes:
-    #         - logs:/opt/airflow/logs
-    #         - ./dags:/opt/airflow/dags
-    #     environment: *airflow_environment
-    #     command: scheduler
+    scheduler:
+        container_name: airflow-scheduler
+        image: *airflow_image
+        restart: always
+        depends_on:
+            - postgres
+        volumes:
+            - logs:/opt/airflow/logs
+            - ./dags:/opt/airflow/dags
+        environment: *airflow_environment
+        command: scheduler
+        networks: 
+            - my_network
 
 volumes:
-  logs:
+    logs:
+
+networks:
+    my_network:
