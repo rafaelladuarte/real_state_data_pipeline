@@ -1,5 +1,15 @@
 # Anotações Técnicas para elaboração da documentação e execução do script
 
+## Login dos serviços docker:
+
+* Mongo-Express -> admin/pass
+* Mongo -> username/password
+* Postgres -> username/password
+* PgAdmin4 ->  admin@email.com/admin
+* Apache-Aiflow Webserver -> 
+
+
+## Anotações
 1.  Para o ambiente virtual conseguir ler a pasta project como um biblioteca python deve configurar o PTHONPATH
 ~~~bash
 export PYTHONPATH=$PYTHONPATH:~./brazilian_ecommerce_data_modeling/project
