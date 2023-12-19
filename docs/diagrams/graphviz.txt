@@ -1,0 +1,113 @@
+graph ER {
+    fontname="Helvetica,Arial,sans-serif"
+    node [fontname="Helvetica,Arial,sans-serif"]
+    edge [fontname="Helvetica,Arial,sans-serif"]
+    layout=neato
+    nodesep=4.0;
+    ranksep=4.0;
+    scale=3.0;
+
+    node [shape=box]; reviews; sellers; geolocations; customers; items; category; products; payments; orders;
+    node [shape=ellipse]; 
+        {node [label="review_id"] review_id_PK; review_id_FK;}
+        {node [label="seller_id"] seller_id_PK; seller_id_FK;}
+        {node [label="customer_id"] customer_id_PK; customer_id_FK;}
+        {node [label="item_id"] item_id_FK; item_id_PK;}
+        {node [label="category_id"] category_id_PK; category_id_FK;}
+        {node [label="product_id"] product_id_PK; product_id_FK;}
+        {node [label="payment_id"] payment_id_PK; payment_id_FK;}
+        review_score; review_title; review_message; review_created_dt; review_answer_dt;
+        seller_name; seller_geolocation_id_FK;
+        geolocation_id_PK; zip_code_prefix; latitude; longitude; city; uf;
+        customer_name; customer_geolocation_id_FK;
+        item_ship_limit_dt; item_price_vl; item_freight_vl;
+        category_name; category_tree;
+        product_name_lenght; product_describe_lenght; product_photos_qty; product_weight_g; product_lenght_cm; product_heighy_cm; product_width_cm;
+        payment_type; payment_count; payment_parcel; payment_vl;
+        order_id; order_status; order_dt; order_approved_at; order_sent_dt; order_received_dt; order_delivery_forecast_dt;
+    node [shape=diamond,style=filled,color=lightgrey]; "review order"; "seller order"; "customer order"; "item order"; "category order"; "product order"; "payment order";
+        "gelocation seller"; "geolocation customer";
+        
+    review_id_PK -- reviews;
+    review_score -- reviews;
+    review_title -- reviews;
+    review_message -- reviews;
+    review_created_dt -- reviews;
+    review_answer_dt -- reviews;
+    reviews -- "review order";
+    "review order" -- orders;
+    
+    geolocation_id_PK -- geolocations;
+    zip_code_prefix -- geolocations;
+    latitude -- geolocations;
+    longitude -- geolocations;
+    city -- geolocations;
+    uf -- geolocations;
+    geolocations -- "gelocation seller";
+    geolocations -- "geolocation customer";
+    
+    seller_id_PK -- sellers; 
+    seller_name -- sellers; 
+    seller_geolocation_id_FK -- sellers;
+    sellers -- "seller order";
+    "seller order" -- orders;
+    "gelocation seller" -- sellers;
+    
+    customer_id_PK -- customers;
+    customer_name -- customers;
+    customer_geolocation_id_FK -- customers;
+    customers -- "customer order";
+    "customer order" -- orders;
+    "geolocation customer" -- customers;
+    
+    item_id_PK -- items;
+    item_ship_limit_dt -- items;
+    item_price_vl -- items;
+    item_freight_vl -- items;
+    items --  "item order";
+    "item order" -- orders;
+    
+    category_id_PK -- category;
+    category_name -- category;
+    category_tree -- category;
+    category -- "category order";
+    "category order" -- orders;
+    
+    product_id_PK -- products;
+    product_name_lenght -- products;
+    product_describe_lenght -- products;
+    product_photos_qty -- products;
+    product_weight_g -- products;
+    product_lenght_cm -- products;
+    product_heighy_cm -- products;
+    product_width_cm -- products;
+    products --  "product order";
+    "product order" -- orders;
+     
+    payment_id_PK -- payments;
+    payment_type -- payments;
+    payment_count -- payments;
+    payment_parcel -- payments;
+    payment_vl -- payments;
+    payments -- "payment order";
+    "payment order" -- orders;
+    
+    order_id -- orders;
+    order_status -- orders;
+    order_dt -- orders;
+    order_approved_at -- orders;
+    order_sent_dt -- orders;
+    order_received_dt -- orders;
+    order_delivery_forecast_dt -- orders;
+    review_id_FK -- orders;
+    seller_id_FK -- orders;
+    customer_id_FK -- orders;
+    item_id_FK -- orders;
+    category_id_FK -- orders;
+    product_id_FK -- orders;
+    payment_id_FK -- orders;
+    
+    
+    label = "Diagrama Entidade Relacionamento Olist Modelagem Star Schema";
+    fontsize=20;
+}

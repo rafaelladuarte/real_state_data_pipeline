@@ -10,6 +10,7 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 sqlalchemy-utils = "*"
 graphviz = "*"
+pygraphviz = "*"
 
 [dev-packages]
 

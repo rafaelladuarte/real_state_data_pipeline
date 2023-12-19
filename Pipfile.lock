@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9561616fde0d7adce0a361f5527d58fcda4993c320a17eb2fd6fd63f2a800170"
+            "sha256": "c2cd9a5cc9d775a2e131df829f8fc98c7dd424052d2ca7230fcc75f4e43638f3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -251,6 +251,14 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.9.9"
         },
+        "pygraphviz": {
+            "hashes": [
+                "sha256:a97eb5ced266f45053ebb1f2c6c6d29091690503e3a5c14be7f908b37b06f2d4"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==1.11"
+        },
         "pymongo": {
             "hashes": [
                 "sha256:00c199e1c593e2c8b033136d7a08f0c376452bac8a896c923fcd6f419e07bdd2",
@@ -297,6 +305,7 @@
                 "sha256:69247f7a2835fc0984bbf0892e6022e9a36aec70e187fcfe6cae6a373eb8c4de",
                 "sha256:6a0ae7a48a6ef82ceb98a366948874834b86c84e288dbd55600c1abfc3ac1d88",
                 "sha256:6a1810c2cbde714decf40f811d1edc0dae45506eb37298fd9d4247b8801509fe",
+                "sha256:6dcc95f4bb9ed793714b43f4f23a7b0c57e4ef47414162297d6f650213512c19",
                 "sha256:76013fef1c9cd1cd00d55efde516c154aa169f2bf059b197c263a255ba8a9ddf",
                 "sha256:77e0df59b1a4994ad30c6d746992ae887f9756a43fc25dec2db515d94cf0222d",
                 "sha256:7bb0e9049e81def6829d09558ad12d16d0454c26cabe6efc3658e544460688d9",
