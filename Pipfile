@@ -4,16 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pymongo = "*"
+pip = "*"
 pandas = "*"
+apache-airflow = "*"
 sqlalchemy = "*"
-psycopg2-binary = "*"
-sqlalchemy-utils = "*"
-graphviz = "*"
-pygraphviz = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.10"
-python_full_version = "3.10.12"
