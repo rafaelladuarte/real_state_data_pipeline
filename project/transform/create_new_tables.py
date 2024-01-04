@@ -7,6 +7,7 @@ import re
 def create_tables_new_schema():
     psql = PostreSQL()
     psql._create_schema(schema_name="star_schema")
+
     list_table = [
         "geolocation",
         "sellers",

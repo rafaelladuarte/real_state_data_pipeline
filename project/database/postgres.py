@@ -1,7 +1,8 @@
 from sqlalchemy_utils import create_database
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateSchema
+from sqlalchemy.orm import Session
+
+from sqlalchemy import create_engine
 from sqlalchemy import text
 
 import pandas as pd
@@ -32,9 +33,8 @@ class PostreSQL:
 
         engine = create_engine(self._uri + "/olist")
 
-        with engine.connect() as connection:
-            connection.execute(CreateSchema(schema_name, if_not_exists=True))
-            connection.commit()
+        connection = engine.connect()
+        connection.execute(CreateSchema(schema_name, if_not_exists=True))
 
     def _create_extesion_uuid(self) -> None:
         """
@@ -45,7 +45,7 @@ class PostreSQL:
 
         with engine.connect() as connection:
             connection.execute(text('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'))
-            connection.commit()
+            # connection.commit()
 
     def post_dataframe(
         self, schema_name: str, collection_name: str, documents: list[dict]
@@ -90,7 +90,7 @@ class PostreSQL:
             engine = create_engine(self._uri + "/olist")
             with engine.connect() as connection:
                 connection.execute(text(query))
-                connection.commit()
+                # connection.commit()
             print(f"Sucesso ao executar consultas SQL da tabela {table}")
         except Exception as e:
             print(f"Erro ao executar consultas SQL da tabela {table}: {e}")

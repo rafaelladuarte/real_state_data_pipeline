@@ -6,6 +6,8 @@ import re
 
 def insert_data_to_new_tables():
     psql = PostreSQL()
+    psql._create_extesion_uuid()
+
     list_table = [
         "geolocation",
         "sellers",
