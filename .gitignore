@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 # Pessoal
+*.txt
+*.csv
+*.html
