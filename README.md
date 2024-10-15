@@ -1,6 +1,16 @@
 # Real Estate Data Pipeline
 
+<p align="center">
+<img alt="GitHub code size in bytes"  src="https://img.shields.io/github/languages/code-size/rafaelladuarte/real_state_data_pipeline?style=plastic">
+<img alt="GitHub repo file count"  src="https://img.shields.io/github/directory-file-count/rafaelladuarte/real_state_data_pipeline?style=plastic">
+<img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/rafaelladuarte/real_state_data_pipeline?style=plastic">
+</p>
+
 <img src="imoveis.jpeg">
+
+<p align="center">
+<img src="https://img.shields.io/static/v1?label=Status&message=Em_Andamento&color=orange&style=for-the-badge"/>
+</p>
 
 ## Descrição do Projeto
 
