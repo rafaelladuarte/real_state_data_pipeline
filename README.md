@@ -1,5 +1,7 @@
 # Real Estate Data Pipeline
 
+<img src="imoveis.jpeg">
+
 ## Descrição do Projeto
 
 O **Real Estate Data Pipeline** é um projeto de portfólio voltado para a criação de um pipeline de ETL (Extração, Transformação e Carga) para coletar dados de imóveis à venda em sites de imobiliárias de Uberlândia-MG. O objetivo é organizar, transformar e carregar os dados em um banco de dados, permitindo sua visualização em um dashboard interativo no Power BI.
