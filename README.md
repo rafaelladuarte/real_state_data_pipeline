@@ -52,12 +52,12 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 
 ## Cronograma de Execução
 
-### Semana 1 (16 a 22 de Outubro)
-- Planejamento e definição de escopo
-- Escolha dos sites de imobiliárias e região alvo
-- Desenho do pipeline de ETL
+### Semana 1 (14 a 17 de Outubro)
+- ✅ Planejamento e definição de escopo
+- ✅ Escolha dos sites de imobiliárias e região alvo
+- ✅ Desenho do pipeline de ETL
 
-### Semana 2 (23 a 29 de Outubro)
+### Semana 2 (18 a 29 de Outubro)
 - Desenvolvimento de scripts de scraping para coleta de dados
 - Testes de scraping em diferentes sites de imobiliárias
 
