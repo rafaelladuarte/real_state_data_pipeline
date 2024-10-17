@@ -6,7 +6,7 @@
 <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/rafaelladuarte/real_state_data_pipeline?style=plastic">
 </p>
 
-<img src="imoveis.jpeg">
+<img src="images/imoveis.jpeg">
 
 <p align="center">
 <img src="https://img.shields.io/static/v1?label=Status&message=Em_Andamento&color=orange&style=for-the-badge"/>
@@ -98,5 +98,5 @@ Este é um projeto de portfólio pessoal, mas contribuições e sugestões são 
 
 ## Autor
 
-Desenvolvido por [Seu Nome].
+Desenvolvido por Rafaella Duarte.
 
