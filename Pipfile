@@ -8,6 +8,8 @@ selenium = "*"
 selenium-stealth = "*"
 pandas = "*"
 diagrams = "*"
+br-nome-gen = "*"
+unidecode = "*"
 
 [dev-packages]
 

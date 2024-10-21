@@ -178,7 +178,8 @@ for tipo in tipos:
         vagas = get_element(
             card,
             By.CSS_SELECTOR,
-            "p[data-testid='card-amenity'][data-cy='rp-cardProperty-parkingSpacesQuantity-txt']",
+            "p[data-testid='card-amenity']",
+            #   '[data-cy='rp-cardProperty-parkingSpacesQuantity-txt']",
             "text"
         )
         preco = get_element(
@@ -187,11 +188,12 @@ for tipo in tipos:
             "div[data-cy='rp-cardProperty-price-txt'] p",
             "text"
         )
-        # ALGUNS PEGA OUTROS NÃO TENTA CRIAR O LINK AO INVES DE PEGA PRONTO
+        # ALGUNS PEGA OUTROS NÃO ,TENTA CRIAR O LINK AO INVES DE PEGA PRONTO
         link = get_element(
             card,
             By.XPATH,
-            f'//*[@id="__next"]/main/section/div/form/div[2]/div[4]/div[1]/div/div[{n}]/div/a',
+            '//*[@id="__next"]/main/section/div/form/div[2]/div[4]/9',
+            #   div[1]/div/div[{n}]/div/a',
             "href"
         )
 
