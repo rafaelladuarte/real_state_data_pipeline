@@ -31,7 +31,7 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 - **Apache Airflow**: Orquestração e gerenciamento do pipeline de ETL.
 - **PostgreSQL/MongoDB**: Armazenamento dos dados transformados para consulta e análise.
 - **Power BI**: Visualização interativa dos dados e criação de dashboards.
-- **BeautifulSoup e Requests**: Ferramentas para scraping de dados dos sites de imobiliárias.
+- **Selenium**: Ferramentas para scraping de dados dos sites de imobiliárias.
 
 ## Estrutura do Pipeline
 
@@ -57,23 +57,23 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 - ✅ Escolha dos sites de imobiliárias e região alvo
 - ✅ Desenho do pipeline de ETL
 
-### Semana 2 (18 a 29 de Outubro)
+### Semana 2  e 3 (18 a 5 de Novembro)
 - Desenvolvimento de scripts de scraping para coleta de dados
-- Testes de scraping em diferentes sites de imobiliárias
-
-### Semana 3 (30 de Outubro a 5 de Novembro)
-- Limpeza e transformação dos dados brutos
-- Implementação de funções para cálculo de insights
+- Testes de scraping em massa
 
 ### Semana 4 (6 a 12 de Novembro)
+- Limpeza e tratamento dos dados brutos
+- Modelagem de Dados
+- Configuração do banco de dados (PostgreSQL/MongoDB)
+- Inserção dos dados modelados no banco de dados
+
+### Semana 5 (13 a 19 de Novembro)
 - Design e implementação do pipeline de ETL no Apache Airflow
 - Integração do scraping e transformação dentro do Airflow
 
-### Semana 5 (13 a 19 de Novembro)
-- Configuração do banco de dados (PostgreSQL/MongoDB)
-- Inserção dos dados transformados no banco de dados
-
 ### Semana 6 (20 a 26 de Novembro)
+- Implementação de funções para cálculo de insights
+- Criação de views para os dashboards
 - Criação de dashboards interativos no Power BI
 - Conexão do Power BI ao banco de dados
 
@@ -100,3 +100,26 @@ Este é um projeto de portfólio pessoal, mas contribuições e sugestões são 
 
 Desenvolvido por Rafaella Duarte.
 
+
+mudei a estrutura do projeto mais ainda recebo o erro modulo nao encontrado
+
+projeto
+* scr
+   * __ini__.py
+   * operation
+      * __ini__.py
+      * geradores.py
+   * scraper
+      * __ini__.py
+      * main.py
+
+
+estou querendo importar o uma função em geradores no script main
+
+from operation.geradores import (
+    gerador_email, gerador_nome, gerador_telefone
+)
+
+o erro que estou recebendo e
+
+ModuleNotFoundError: No module named 'operation'

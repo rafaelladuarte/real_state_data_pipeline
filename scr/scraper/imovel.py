@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 from scraper import WebScraper
-from utility import (
+from operation.geradores import (
     gerador_email, gerador_nome, gerador_telefone
 )
 
@@ -9,16 +9,34 @@ import csv
 
 
 links = []
-with open("scraper/links.csv", encoding='utf-8') as csvf:
+with open("scr/scraper/links.csv", encoding='utf-8') as csvf:
     reader = csv.reader(csvf)
     next(reader, None)
     for row in reader:
         links.append(row[0])
 
 data = []
-for link in links:
+for link in links[1:]:
     scraper = WebScraper()
     scraper.get_driver(link)
+
+    # COLETA LINK DAS IMAGENS
+    carousel_images = scraper.get_elements(
+        by=By.CSS_SELECTOR,
+        path='ul.carousel-photos--wrapper'
+    )
+
+    image_urls = []
+    for li in carousel_images:
+        srcset = scraper.get_element(
+            by=By.CLASS_NAME,
+            path="carousel-photos--img",
+            attribute_type="srcset",
+            driver_element=li
+        )
+        if srcset:
+            largest_image_url = srcset.split(",")[-1].strip().split(" ")[0]
+            image_urls.append(largest_image_url)
 
     # COLETA DAS INFORMAÇÕES BASICAS
     details = scraper.get_element(
@@ -136,29 +154,21 @@ for link in links:
     phone_gerado = gerador_telefone()
     email_gerado = gerador_email(nome_gerado)
 
-    forms = scraper.get_element(
-        by=By.CLASS_NAME,
-        path="form-lead-container"
-    )
-
     nome = scraper.get_element(
         by=By.ID,
         path='l-input-7',
-        # driver_element=forms
     )
     nome.send_keys(nome_gerado)
 
     email = scraper.get_element(
         by=By.ID,
         path='l-input-8',
-        # driver_element=forms
     )
     email.send_keys(email_gerado)
 
     phone = scraper.get_element(
         by=By.ID,
         path='l-input-9',
-        # driver_element=forms
     )
     phone.send_keys(phone_gerado)
 
@@ -167,6 +177,11 @@ for link in links:
         path="adopt-accept-all-button",
         attribute_type="button"
     )   # Botão para fechar modal de cookies
+
+    forms = scraper.get_element(
+        by=By.CLASS_NAME,
+        path="form-lead-container"
+    )
 
     # XPATH
     # "//button[@data-testid='l-button' and
@@ -178,12 +193,12 @@ for link in links:
     # 'l-button l-button--context-secondary
     #       l-button--size-regular l-button--icon-left'
 
-    scraper.get_element(
-        by=By,
-        path="",
-        attribute_type="button",
-        driver_element=forms
-    )   # Botão para enviar formulario
+    # scraper.get_element(
+    #     by=By,
+    #     path="",
+    #     attribute_type="button",
+    #     driver_element=forms
+    # )   # Botão para enviar formulario
 
     # COLETA DA LISTA DE TELEFONES
     list_phone = scraper.get_element(
@@ -195,9 +210,8 @@ for link in links:
     # COLETA DA DATA DE CRIAÇÃO DO ANUNCIO
     create_update = scraper.get_element(
         by=By.CSS_SELECTOR,
-        path="span[data-testid='listing-created-date']",
-        attribute_type="text",
-        driver_element=details,
+        path="div[data-testid='info-date']",
+        attribute_type="text"
     )
 
     data.append({
@@ -211,17 +225,18 @@ for link in links:
         "banheiro": banheiro,
         "vagas": vagas,
         "suite": suites,
-        "outros": outras,
+        "outros": outras,                       # ERRO
         "address": address,
-        "telefone": list_phone,
-        "mobiliaria": mobi,
+        "telefone": list_phone,                 # ERRO
+        "mobiliaria": mobi,                     # ERRO
         "url_mobiliaria": url_mobi,
+        "images": image_urls,
         "data_criacao_anuncio": create_update
     })
 
     scraper.close_driver()
 
 pd.DataFrame.from_dict(data).to_csv(
-    "scraper/info_imoveis.csv",
+    "scr/scraper/info_imoveis.csv",
     index=False
 )

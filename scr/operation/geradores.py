@@ -1,6 +1,7 @@
 from br_nome_gen import pessoa_random
-
 from unidecode import unidecode   # type: ignore
+
+import requests
 import random
 
 

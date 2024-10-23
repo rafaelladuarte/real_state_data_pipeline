@@ -1,0 +1,27 @@
+import requests
+import os
+
+
+def download_image(url, filename):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        print(f"Imagem {filename} baixada com sucesso.")
+
+        return os.path.abspath(filename), filename
+    else:
+        print(f"Erro ao baixar a imagem: {url}")
+        return None, None
+
+
+def delete_image(filepath):
+    try:
+        # Verifica se o arquivo existe
+        if os.path.exists(filepath):
+            os.remove(filepath)  # Apaga o arquivo
+            print(f"Imagem {filepath} apagada com sucesso.")
+        else:
+            print(f"O arquivo {filepath} não foi encontrado.")
+    except Exception as e:
+        print(f"Ocorreu um erro ao tentar apagar a imagem: {e}")

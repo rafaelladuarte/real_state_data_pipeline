@@ -106,6 +106,8 @@ class WebScraper:
                 return element.text
             elif attribute_type == "href":
                 return element.get_attribute("href")
+            elif attribute_type == "srcset":
+                return element.get_attribute("srcset")
             elif attribute_type == "button":
                 element.click()
         except TimeoutException:
