@@ -99,27 +99,3 @@ Este é um projeto de portfólio pessoal, mas contribuições e sugestões são 
 ## Autor
 
 Desenvolvido por Rafaella Duarte.
-
-
-mudei a estrutura do projeto mais ainda recebo o erro modulo nao encontrado
-
-projeto
-* scr
-   * __ini__.py
-   * operation
-      * __ini__.py
-      * geradores.py
-   * scraper
-      * __ini__.py
-      * main.py
-
-
-estou querendo importar o uma função em geradores no script main
-
-from operation.geradores import (
-    gerador_email, gerador_nome, gerador_telefone
-)
-
-o erro que estou recebendo e
-
-ModuleNotFoundError: No module named 'operation'
