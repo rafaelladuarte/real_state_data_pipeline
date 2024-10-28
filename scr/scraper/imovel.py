@@ -1,8 +1,12 @@
 from selenium.webdriver.common.by import By
 from scraper import WebScraper
-from operation.geradores import (
-    gerador_email, gerador_nome, gerador_telefone
+from utility.generator import (
+    generator_email, generator_name, generator_phone
 )
+from utility.operator import (
+    extract_date, extract_number
+)
+from time import sleep
 
 import pandas as pd
 import csv
@@ -15,8 +19,16 @@ with open("scr/scraper/links.csv", encoding='utf-8') as csvf:
     for row in reader:
         links.append(row[0])
 
+forbidden_exact = 'https://www.zapimoveis.com.br/'
+forbidden_prefix = 'https://www.zapimoveis.com.br/imobiliaria/'
+filtered_links = [
+    link for link in links
+    if link != forbidden_exact and not link.startswith(forbidden_prefix)
+]
+
+
 data = []
-for link in links[1:]:
+for link in filtered_links[1:10]:
     scraper = WebScraper()
     scraper.get_driver(link)
 
@@ -70,44 +82,35 @@ for link in links[1:]:
     )
 
     # COLETA DA LISTA DE COMODIDATES
-    amenities = scraper.get_element(
+    amenities_list = scraper.get_element(
         by=By.CLASS_NAME,
         path="amenities-list",
         driver_element=details
     )
-    span_item = 'span[contains(@class, "amenities-item-text")]'
+    span_elements = scraper.get_elements(
+        by=By.TAG_NAME,
+        path="span",
+        driver_element=amenities_list
+    )
+    amenities = [span.text for span in span_elements if span.text.strip()]
 
-    area = scraper.get_element(
-        by=By.XPATH,
-        path=f'//p[@itemprop="floorSize"]//{span_item}',
-        attribute_type="text",
-        driver_element=amenities
-    )
-    quarto = scraper.get_element(
-        by=By.XPATH,
-        path=f'//p[@itemprop="numberOfRooms"]//{span_item}',
-        attribute_type="text",
-        driver_element=amenities
-    )
-    banheiro = scraper.get_element(
-        by=By.XPATH,
-        path=f'//p[@itemprop="numberOfBathroomsTotal"]//{span_item}',
-        attribute_type="text",
-        driver_element=amenities
-    )
-    vagas = scraper.get_element(
-        by=By.XPATH,
-        path=f'//p[@itemprop="numberOfParkingSpaces"]//{span_item}',
-        attribute_type="text",
-        driver_element=amenities
-    )
-    suites = scraper.get_element(
-        by=By.XPATH,
-        path=f'//p[@itemprop="numberOfSuites"]//{span_item}',
-        attribute_type="text",
-        driver_element=amenities
-    )
-    outras = {}
+    area, bedroom, bathroom = None, None, None
+    garage, suites = None, None
+    others = []
+
+    for amenitie in amenities:
+        if "m²" in amenitie:
+            area = extract_number(amenitie)
+        elif "quarto" in amenitie:
+            bedroom = extract_number(amenitie)
+        elif "banheiro" in amenitie:
+            bathroom = extract_number(amenitie)
+        elif "vaga" in amenitie:
+            garage = extract_number(amenitie)
+        elif "suíte" in amenitie:
+            suites = extract_number(amenitie)
+        else:
+            others.append(amenitie)
 
     # COLETA DE OUTROS DADOS DO ANUNCIO
     container = scraper.get_element(
@@ -148,27 +151,41 @@ for link in links[1:]:
         attribute_type="text",
     )
 
-    # PREENCHENDO FORMULARIO DE COLETA DE TELEFONE
-
-    nome_gerado = gerador_nome()
-    phone_gerado = gerador_telefone()
-    email_gerado = gerador_email(nome_gerado)
-
-    nome = scraper.get_element(
-        by=By.ID,
-        path='l-input-7',
+    # COLETA DA DATA DE CRIAÇÃO DO ANUNCIO
+    create_update = scraper.get_element(
+        by=By.CSS_SELECTOR,
+        path="div[data-testid='info-date']",
+        attribute_type="text"
     )
-    nome.send_keys(nome_gerado)
+    if create_update:
+        create_dt, update_dt = extract_date(create_update)
+
+    # PREENCHENDO FORMULARIO DE COLETA DE TELEFONE
+    name_gerado = generator_name()
+    phone_gerado = generator_phone()
+    email_gerado = generator_email(name_gerado)
+
+    scraper.get_element(
+        by=By.XPATH,
+        path="//button[@data-cy='ldp-viewPhone-btn']",
+        attribute_type="button"
+    )
+
+    name = scraper.get_element(
+        by=By.XPATH,
+        path="//input[@data-cy='lead-modalPhone-name-inp']"
+    )
+    name.send_keys(name_gerado)
 
     email = scraper.get_element(
-        by=By.ID,
-        path='l-input-8',
+        by=By.XPATH,
+        path="//input[@data-cy='lead-modalPhone-email-inp']"
     )
     email.send_keys(email_gerado)
 
     phone = scraper.get_element(
-        by=By.ID,
-        path='l-input-9',
+        by=By.XPATH,
+        path="//input[@data-cy='lead-modalPhone-phone-inp']"
     )
     phone.send_keys(phone_gerado)
 
@@ -178,60 +195,50 @@ for link in links[1:]:
         attribute_type="button"
     )   # Botão para fechar modal de cookies
 
-    forms = scraper.get_element(
-        by=By.CLASS_NAME,
-        path="form-lead-container"
+    scraper.get_element(
+        by=By.XPATH,
+        path="//button[@data-cy='lead-modalPhone-sendData-btn']",
+        attribute_type="button"
     )
 
-    # XPATH
-    # "//button[@data-testid='l-button' and
-    #       @data-cy='ldp-formMessage-sendMessage-btn']"]
-    # CSS SELECTOR
-    # "button[data-testid='l-button']
-    #       [data-cy='ldp-formMessage-sendMessage-btn']"
-    # CLASS NAME'
-    # 'l-button l-button--context-secondary
-    #       l-button--size-regular l-button--icon-left'
+    sleep(5)
 
-    # scraper.get_element(
-    #     by=By,
-    #     path="",
-    #     attribute_type="button",
-    #     driver_element=forms
-    # )   # Botão para enviar formulario
+    fail_phone = scraper.get_element(
+        by=By.CLASS_NAME,
+        path='FailedFeedback_failed-contact__content__lL4Gz'
+    )
 
     # COLETA DA LISTA DE TELEFONES
-    list_phone = scraper.get_element(
-        by=By.XPATH,
-        path="//button[@data-cy='lead-modalPhone-phonesList-txt']",
-        attribute_type="href"
-    )
+    contacts = []
+    if fail_phone is None:
+        list_phone = scraper.get_elements(
+            by=By.XPATH,
+            path="//a[@data-cy='lead-modalPhone-phonesList-txt']",
+        )
 
-    # COLETA DA DATA DE CRIAÇÃO DO ANUNCIO
-    create_update = scraper.get_element(
-        by=By.CSS_SELECTOR,
-        path="div[data-testid='info-date']",
-        attribute_type="text"
-    )
+        for phone in list_phone:
+            tel = phone.get_attribute("href").replace("tel:", "")
+            contacts.append(tel)
 
     data.append({
         "titulo": title,
         "descricao": describe,
-        "preco": price,
-        "condominio": cond,
-        "iptu": iptu,
+        "preco": extract_number(price),
+        "condominio": extract_number(cond),
+        "iptu": extract_number(iptu),
         "area": area,
-        "quartos": quarto,
-        "banheiro": banheiro,
-        "vagas": vagas,
+        "quartos": bedroom,
+        "banheiro": bathroom,
+        "vagas": garage,
         "suite": suites,
-        "outros": outras,                       # ERRO
+        "outros": others,
         "address": address,
-        "telefone": list_phone,                 # ERRO
+        "telefone": contacts,                 # ERRO
         "mobiliaria": mobi,                     # ERRO
         "url_mobiliaria": url_mobi,
         "images": image_urls,
-        "data_criacao_anuncio": create_update
+        "data_criacao_anuncio": create_dt,
+        "data_atualizacao_anuncio": update_dt
     })
 
     scraper.close_driver()

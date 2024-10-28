@@ -55,4 +55,4 @@ for tipo in tipos:
         if link:
             data.append({"links": link})
 
-pd.DataFrame.from_dict(data).to_csv("scr.scraper/links.csv", index=False)
+pd.DataFrame.from_dict(data).to_csv("scr/scraper/links.csv", index=False)

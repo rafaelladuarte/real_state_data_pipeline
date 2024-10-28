@@ -18,6 +18,9 @@ class WebScraper:
         options = webdriver.ChromeOptions()
         options.add_argument("start-maximized")
         options.add_argument('--disable-gpu')
+        options.add_argument("--disable-application-cache")
+        options.add_argument("--disable-cache")
+        options.add_argument("--incognito")
         options.add_experimental_option(
             "excludeSwitches",
             ["enable-automation"]
@@ -102,10 +105,13 @@ class WebScraper:
                 element = WebDriverWait(self.driver, timeout).until(
                     EC.presence_of_element_located((by, path))
                 )
+            sleep(1)
             if attribute_type == "text":
                 return element.text
             elif attribute_type == "href":
                 return element.get_attribute("href")
+            elif attribute_type == "title":
+                return element.get_attribute("title")
             elif attribute_type == "srcset":
                 return element.get_attribute("srcset")
             elif attribute_type == "button":

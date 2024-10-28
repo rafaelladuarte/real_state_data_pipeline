@@ -7,19 +7,15 @@ def download_image(url, filename):
     if response.status_code == 200:
         with open(filename, 'wb') as f:
             f.write(response.content)
-        print(f"Imagem {filename} baixada com sucesso.")
-
         return os.path.abspath(filename), filename
     else:
-        print(f"Erro ao baixar a imagem: {url}")
         return None, None
 
 
 def delete_image(filepath):
     try:
-        # Verifica se o arquivo existe
         if os.path.exists(filepath):
-            os.remove(filepath)  # Apaga o arquivo
+            os.remove(filepath)
             print(f"Imagem {filepath} apagada com sucesso.")
         else:
             print(f"O arquivo {filepath} não foi encontrado.")
