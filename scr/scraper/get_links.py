@@ -8,7 +8,8 @@ scraper = WebScraper()
 data = []
 tipos = [
     "casas",
-    # "apartamentos", "studio",
+    "apartamentos",
+    # "studio",
     # "quitinetes", "casas-de-condominio",
     # "cobertura", "flat", "float"
 ]
@@ -55,4 +56,4 @@ for tipo in tipos:
         if link:
             data.append({"links": link})
 
-pd.DataFrame.from_dict(data).to_csv("scr/scraper/links.csv", index=False)
+pd.DataFrame.from_dict(data).to_csv("scr/scraper/csv/links.csv", index=False)

@@ -123,3 +123,7 @@ class WebScraper:
 
     def close_driver(self):
         self.driver.quit()
+
+    def change_last_page(self):
+        windows = self.driver.window_handles
+        self.driver.switch_to.window(windows[-1])

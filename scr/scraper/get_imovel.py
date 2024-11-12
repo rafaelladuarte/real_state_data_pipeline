@@ -13,19 +13,18 @@ import csv
 
 
 links = []
-with open("scr/scraper/links.csv", encoding='utf-8') as csvf:
+with open("scr/scraper/csv/links.csv", encoding='utf-8') as csvf:
     reader = csv.reader(csvf)
     next(reader, None)
     for row in reader:
         links.append(row[0])
 
-forbidden_exact = 'https://www.zapimoveis.com.br/'
-forbidden_prefix = 'https://www.zapimoveis.com.br/imobiliaria/'
+allowed_prefix = 'https://www.zapimoveis.com.br/imovel/'
+
 filtered_links = [
     link for link in links
-    if link != forbidden_exact and not link.startswith(forbidden_prefix)
+    if link.startswith(allowed_prefix)
 ]
-
 
 data = []
 for link in filtered_links[1:10]:
@@ -34,8 +33,8 @@ for link in filtered_links[1:10]:
 
     # COLETA LINK DAS IMAGENS
     carousel_images = scraper.get_elements(
-        by=By.CSS_SELECTOR,
-        path='ul.carousel-photos--wrapper'
+        by=By.XPATH,
+        path="//ul[@class='carousel-photos--wrapper']/li"
     )
 
     image_urls = []
@@ -232,11 +231,10 @@ for link in filtered_links[1:10]:
         "vagas": garage,
         "suite": suites,
         "outros": others,
-        "address": address,
-        "telefone": contacts,                 # ERRO
-        "mobiliaria": mobi,                     # ERRO
-        "url_mobiliaria": url_mobi,
-        "images": image_urls,
+        "endereco": address,
+        "telefone": contacts,                   # ERRO
+        "imobiliaria_id": extract_number(url_mobi),
+        "imagens": image_urls,
         "data_criacao_anuncio": create_dt,
         "data_atualizacao_anuncio": update_dt
     })
@@ -244,6 +242,6 @@ for link in filtered_links[1:10]:
     scraper.close_driver()
 
 pd.DataFrame.from_dict(data).to_csv(
-    "scr/scraper/info_imoveis.csv",
+    "scr/scraper/csv/info_imoveis.csv",
     index=False
 )

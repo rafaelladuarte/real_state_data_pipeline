@@ -2,17 +2,17 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 
-from operation.image import (
+from utility.image import (
     delete_image, download_image
 )
 
 
 class GoogleDriver:
-    def __init__(self, creds_path):
-        self.cred_path = creds_path
+    def __init__(self, creds_path: str):
+        self._cred_path = creds_path
 
     def share_file_with_user(self, file_id):
-        creds = Credentials.from_service_account_file(self.cred_path)
+        creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
         permission = {
@@ -32,7 +32,7 @@ class GoogleDriver:
             print(f"Erro ao compartilhar arquivo: {e}")
 
     def create_public_folder(self, folder_name):
-        creds = Credentials.from_service_account_file(self.cred_path)
+        creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
         folder_metadata = {

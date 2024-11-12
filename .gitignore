@@ -134,5 +134,7 @@ dmypy.json
 *.html
 *.json
 
+csv/
+
 Meu Imovel UDI
 udimeuimovel@gmail.com
