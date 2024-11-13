@@ -52,44 +52,45 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 
 ## Cronograma de Execução
 
-### Semana 1 (14 a 17 de Outubro)
+### Parte 1 (14 a 17 de Outubro)
 - ✅ Planejamento e definição de escopo
 - ✅ Escolha dos sites de imobiliárias e região alvo
 - ✅ Desenho do pipeline de ETL
 
-### Semana 2  e 3 (18 a 5 de Novembro)
-- Desenvolvimento de scripts de scraping para coleta de dados
+### Parte 2  e 3 (18 de Outubro a 15 de Novembro)
+- ✅ Desenvolvimento de scripts de scraping para coleta de dados
 - Testes de scraping em massa
 
-### Semana 4 (6 a 12 de Novembro)
+### Parte 4 (16 a 22 de Novembro)
 - Limpeza e tratamento dos dados brutos
 - Modelagem de Dados
 - Configuração do banco de dados (PostgreSQL/MongoDB)
 - Inserção dos dados modelados no banco de dados
 
-### Semana 5 (13 a 19 de Novembro)
+### Parte 5 (23 de Novembro a 6 de Dezembro)
 - Design e implementação do pipeline de ETL no Apache Airflow
 - Integração do scraping e transformação dentro do Airflow
 
-### Semana 6 (20 a 26 de Novembro)
+### Parte 6 (7 a 13 de Dezembro)
 - Implementação de funções para cálculo de insights
 - Criação de views para os dashboards
 - Criação de dashboards interativos no Power BI
 - Conexão do Power BI ao banco de dados
 
-### Semana 7 (27 de Novembro a 3 de Dezembro)
+### Parte 7 (13 a 20 de Dezembro)
 - Revisão do pipeline e otimização
 - Ajustes nos dashboards do Power BI
 
-### Semana 8 (4 a 10 de Dezembro)
+### Parte 8 (21 a 27 de Dezembro)
 - Documentação do projeto
 - Preparação do código e documentação para publicação
 
-### Semana 9 (11 a 17 de Dezembro)
+### Parte 9 (27 a 10 de Janeiro)
 - Revisão final
+- Gravação de Pitch Técnico
 - Publicação do projeto no GitHub
 
-### Semana 10 (18 a 24 de Dezembro)
+### Parte 10 (11 a 24 de Janeiro)
 - Coleta de feedback e ajustes finais
 
 ## Contribuições
