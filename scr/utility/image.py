@@ -16,8 +16,8 @@ def delete_image(filepath):
     try:
         if os.path.exists(filepath):
             os.remove(filepath)
-            print(f"Imagem {filepath} apagada com sucesso.")
-        else:
-            print(f"O arquivo {filepath} não foi encontrado.")
+            # print(f"Imagem {filepath} apagada com sucesso.")
+        # else:
+        #     print(f"O arquivo {filepath} não foi encontrado.")
     except Exception as e:
         print(f"Ocorreu um erro ao tentar apagar a imagem: {e}")

@@ -48,3 +48,20 @@ def extract_number(text):
         number_str = match.group()
         return int(number_str) if '.' not in number_str else float(number_str)
     return None
+
+
+def treatment_string(text):
+    word_connect = ["com", "à", "e", "de", "a", "o", "da", "do", "para", "em"]
+
+    text = text.lower()
+    text = re.sub(r"[^a-z0-9\s.]", "", text)
+
+    words = text.split()
+    words_filter = [
+        word for word in words
+        if word not in word_connect
+    ]
+
+    new_text = "_".join(words_filter)
+
+    return new_text

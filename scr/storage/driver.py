@@ -5,13 +5,15 @@ from google.oauth2.service_account import Credentials
 from utility.image import (
     delete_image, download_image
 )
+from security.secrets import get_secret_value
 
 
 class GoogleDriver:
-    def __init__(self, creds_path: str):
+    def __init__(self, creds_path: str, folder_id: str):
         self._cred_path = creds_path
+        self._folder_id = folder_id
 
-    def share_file_with_user(self, file_id):
+    def share_file_with_user(self, file_id: str) -> None:
         creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
@@ -31,7 +33,7 @@ class GoogleDriver:
         except Exception as e:
             print(f"Erro ao compartilhar arquivo: {e}")
 
-    def create_public_folder(self, folder_name):
+    def create_public_folder(self, folder_name: str) -> str:
         creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
@@ -58,8 +60,16 @@ class GoogleDriver:
 
         return folder_id
 
-    def upload_image_to_drive(self, image_path, image_name, folder_id):
-        creds = Credentials.from_service_account_file(self.cred_path)
+    def upload_image_to_drive(
+            self,
+            image_path: str,
+            image_name: str,
+            folder_id: str = None
+    ) -> str:
+        if not folder_id:
+            folder_id = self._folder_id
+
+        creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
         file_metadata = {
@@ -85,8 +95,8 @@ class GoogleDriver:
         public_link = f"https://drive.google.com/uc?id={file.get('id')}"
         return public_link
 
-    def list_files_in_drive(self, service):
-        creds = Credentials.from_service_account_file(self.cred_path)
+    def list_files_in_drive(self):
+        creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
         results = service.files().list(
@@ -105,8 +115,10 @@ class GoogleDriver:
 
 if __name__ == '__main__':
 
-    drive = GoogleDriver('client_secrets.json')
-    folder_id = "1htDOVvWcdVkUcETw-sOGUqkmux_MkGWc"
+    drive = GoogleDriver(
+        get_secret_value=get_secret_value('CRED_PATH'),
+        folder_id=get_secret_value('FOLDER_ID')
+    )
 
     base = "https://resizedimgs.zapimoveis.com.br/fit-in/870x707/vr.images.sp/"
     image_urls = [
@@ -120,7 +132,6 @@ if __name__ == '__main__':
         link = drive.upload_image_to_drive(
             image_path,
             image_filename,
-            folder_id
             )
         print(link)
 

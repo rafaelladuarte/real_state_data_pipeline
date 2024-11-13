@@ -4,25 +4,31 @@ from scraper import WebScraper
 from utility.operator import (
     extract_date, extract_number
 )
+from storage.mongo import MongoDB
+from security.secrets import get_secret_value
+
 from time import sleep
 
-import pandas as pd
-import csv
 import re
 
+mongo = MongoDB(
+    uri=get_secret_value('MONGO_URI')
+)
 scraper = WebScraper()
 
-mobi_ids = []
-with open("scr/scraper/csv/info_imoveis.csv", encoding='utf-8') as csvfile:
-    reader = csv.DictReader(csvfile)
-    next(reader, None)
-    for row in reader:
-        mobi_ids.append(row['mobi_id'])
-
-mobi_ids = list(set(mobi_ids))
+docs = mongo.get_documents(
+    flag='get_mobi',
+    database='scraper',
+    collection='imoveis'
+)
 
 data = []
-for mobi_id in mobi_ids:
+list_id = []
+for doc in docs[:10]:
+
+    mobi_id = doc['imobiliaria_id']
+    list_id.append(doc['id'])
+
     link = "https://www.zapimoveis.com.br/imobiliaria/" + mobi_id
 
     scraper = WebScraper()
@@ -69,23 +75,6 @@ for mobi_id in mobi_ids:
         driver_element=infos[0]
     )
 
-    whatsapp_button = scraper.get_element(
-        by=By.XPATH,
-        path="//button[@data-testid='l-button' and @aria-label='WhatsApp']",
-        attribute_type="button"
-    )   # Botão para coletar o link do whatsaap
-
-    sleep(3)
-
-    page_whats = scraper.change_last_page()
-
-    whatsapp_link = scraper.get_element(
-        by=By.XPATH,
-        path="//a[contains(@href, 'https://wa.me')]",
-        attribute_type="href",
-        driver_element=page_whats
-    )
-
     data.append(
         {
            "id": mobi_id,
@@ -93,7 +82,7 @@ for mobi_id in mobi_ids:
            "credencial": credential,
            "quantidade_imovel": extract_number(imovel_qt),
            "data_cadastro": extract_date(created_dt)[0],
-           "telefone": extract_number(whatsapp_link)    # ERRO
+           "telefone": None   # ERRO
         }
      )
 
@@ -101,7 +90,15 @@ for mobi_id in mobi_ids:
 
     sleep(2)
 
-pd.DataFrame.from_dict(data).to_csv(
-    "scr/scraper/csv/info_imobiliarias.csv",
-    index=False
+mongo.update_documents(
+    ids=list_id,
+    flag="get_mobi",
+    database='scraper',
+    collection='imoveis'
+)
+
+mongo.insert_documents(
+    documents=data,
+    database='scraper',
+    collection='imobiliarias'
 )

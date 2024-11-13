@@ -13,6 +13,7 @@ unidecode = "*"
 requests = "*"
 pydrive = "*"
 google-api-python-client = "*"
+pymongo = "*"
 
 [dev-packages]
 

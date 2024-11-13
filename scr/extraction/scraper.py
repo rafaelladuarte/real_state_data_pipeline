@@ -14,7 +14,7 @@ class WebScraper:
     def get_driver(self, url):
         self.driver.get(url)
 
-    def config_driver(self):
+    def config_driver(self) -> webdriver:
         options = webdriver.ChromeOptions()
         options.add_argument("start-maximized")
         options.add_argument('--disable-gpu')
@@ -42,7 +42,7 @@ class WebScraper:
 
     def scroll_until_element_stops_moving(
             self,
-            css_selector,
+            css_selector: str,
     ):
         previous_location = None
         attempts = 0
@@ -73,7 +73,7 @@ class WebScraper:
         by: By,
         path: str,
         driver_element: webdriver = None
-    ):
+    ) -> webdriver:
         try:
             if driver_element:
                 elements = WebDriverWait(driver_element, 10).until(
@@ -95,7 +95,7 @@ class WebScraper:
         attribute_type: str = None,
         driver_element: webdriver = None,
         timeout=10
-    ):
+    ) -> webdriver:
         try:
             if driver_element:
                 element = WebDriverWait(driver_element, timeout).until(

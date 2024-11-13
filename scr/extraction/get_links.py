@@ -1,8 +1,15 @@
 from selenium.webdriver.common.by import By
+
 from scraper import WebScraper
+from storage.mongo import MongoDB
+from security.secrets import get_secret_value
 
-import pandas as pd
+from datetime import datetime
+# import pandas as pd
 
+mongo = MongoDB(
+    uri=get_secret_value('MONGO_URI')
+)
 scraper = WebScraper()
 
 data = []
@@ -53,7 +60,18 @@ for tipo in tipos:
             driver_element=card
         )
 
-        if link:
-            data.append({"links": link})
+        allowed_prefix = 'https://www.zapimoveis.com.br/imovel/'
 
-pd.DataFrame.from_dict(data).to_csv("scr/scraper/csv/links.csv", index=False)
+        if link and link.startswith(allowed_prefix):
+            data.append(
+                {
+                    "link": link,
+                    "created_dt": datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                }
+            )
+
+mongo.insert_documents(
+    documents=data,
+    database='scraper',
+    collection='links_imoveis'
+)

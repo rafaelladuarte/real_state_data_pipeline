@@ -1,35 +1,64 @@
 from selenium.webdriver.common.by import By
+
+from security.secrets import get_secret_value
+from storage.mongo import MongoDB
 from scraper import WebScraper
+
 from utility.generator import (
     generator_email, generator_name, generator_phone
 )
 from utility.operator import (
     extract_date, extract_number
 )
+
+from datetime import datetime
 from time import sleep
 
-import pandas as pd
-import csv
+mongo = MongoDB(
+    uri=get_secret_value('MONGO_URI')
+)
 
-
-links = []
-with open("scr/scraper/csv/links.csv", encoding='utf-8') as csvf:
-    reader = csv.reader(csvf)
-    next(reader, None)
-    for row in reader:
-        links.append(row[0])
-
-allowed_prefix = 'https://www.zapimoveis.com.br/imovel/'
-
-filtered_links = [
-    link for link in links
-    if link.startswith(allowed_prefix)
-]
+docs = mongo.get_documents(
+    flag='scraper',
+    database='scraper',
+    collection='links_imoveis'
+)
 
 data = []
-for link in filtered_links[1:10]:
+list_id = []
+for doc in docs[:10]:
+    link = doc['link']
+    list_id.append(doc['id'])
+
     scraper = WebScraper()
     scraper.get_driver(link)
+
+    # COLETA DADOS DO ANUNCIO
+    container = scraper.get_element(
+        by=By.CLASS_NAME,
+        path="desktop-only-container"
+    )
+
+    title = scraper.get_element(
+        by=By.XPATH,
+        path='//div[@class="stack small column"]//h1',
+        attribute_type="text",
+        driver_element=container
+    )
+    scraper.get_element(
+        by=By.CLASS_NAME,
+        path='collapse-toggle-button',
+        attribute_type="button",
+        driver_element=container
+    )   # Botão para visualizar a descrição completa
+
+    p = "p[@data-testid='description-content']"
+    describe = scraper.get_element(
+        by=By.XPATH,
+        path=f"//div[contains(@class, 'collapse-content')]//{p}",
+        attribute_type="text",
+        driver_element=container
+    )
 
     # COLETA LINK DAS IMAGENS
     carousel_images = scraper.get_elements(
@@ -37,7 +66,7 @@ for link in filtered_links[1:10]:
         path="//ul[@class='carousel-photos--wrapper']/li"
     )
 
-    image_urls = []
+    original_image_urls = []
     for li in carousel_images:
         srcset = scraper.get_element(
             by=By.CLASS_NAME,
@@ -47,7 +76,7 @@ for link in filtered_links[1:10]:
         )
         if srcset:
             largest_image_url = srcset.split(",")[-1].strip().split(" ")[0]
-            image_urls.append(largest_image_url)
+            original_image_urls.append(largest_image_url)
 
     # COLETA DAS INFORMAÇÕES BASICAS
     details = scraper.get_element(
@@ -110,33 +139,6 @@ for link in filtered_links[1:10]:
             suites = extract_number(amenitie)
         else:
             others.append(amenitie)
-
-    # COLETA DE OUTROS DADOS DO ANUNCIO
-    container = scraper.get_element(
-        by=By.CLASS_NAME,
-        path="desktop-only-container"
-    )
-
-    title = scraper.get_element(
-        by=By.XPATH,
-        path='//div[@class="stack small column"]//h1',
-        attribute_type="text",
-        driver_element=container
-    )
-    scraper.get_element(
-        by=By.CLASS_NAME,
-        path='collapse-toggle-button',
-        attribute_type="button",
-        driver_element=container
-    )   # Botão para visualizar a descrição completa
-
-    p = "p[@data-testid='description-content']"
-    describe = scraper.get_element(
-        by=By.XPATH,
-        path=f"//div[contains(@class, 'collapse-content')]//{p}",
-        attribute_type="text",
-        driver_element=container
-    )
 
     # COLETA DAS INFORMAÇÕES DA IMOBILIARIA OU RESPONSAVEL
     url_mobi = scraper.get_element(
@@ -234,14 +236,23 @@ for link in filtered_links[1:10]:
         "endereco": address,
         "telefone": contacts,                   # ERRO
         "imobiliaria_id": extract_number(url_mobi),
-        "imagens": image_urls,
+        "original_imagens": original_image_urls,
         "data_criacao_anuncio": create_dt,
-        "data_atualizacao_anuncio": update_dt
+        "data_atualizacao_anuncio": update_dt,
+        "created_dt": datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     })
 
     scraper.close_driver()
 
-pd.DataFrame.from_dict(data).to_csv(
-    "scr/scraper/csv/info_imoveis.csv",
-    index=False
+mongo.update_documents(
+    ids=list_id,
+    flag="scraper",
+    database='scraper',
+    collection='links'
+)
+
+mongo.insert_documents(
+    documents=data,
+    database='scraper',
+    collection='imoveis'
 )
