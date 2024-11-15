@@ -30,9 +30,9 @@ with Diagram(
             airflow = Airflow("Airflow")
 
     with Cluster("ETL"):
-        python_scraper = Python("1. Extraction\n (Scraper)")
-        python_treatment = Python("2. Treatment\n (SQL)")
-        power_bi = Custom("3. Load\n (Power BI)", "images/powerbi_logo.png")
+        python_scraper = Python("1. Extraction")
+        python_treatment = Python("2. Treatment")
+        power_bi = Custom("3. Load", "images/powerbi_logo.png")
 
     web_page = Client("Web Page")
 
