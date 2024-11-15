@@ -47,3 +47,18 @@ def generator_email(nome):
     ]
 
     return random.choice(option_email)
+
+
+def generator_creci():
+    list_uf = [
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+        "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+        "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    ]
+
+    number_creci = random.randint(10000, 99999)
+    uf_creci = random.choice(list_uf)
+
+    creci = f"CRECI {number_creci}-{uf_creci}"
+
+    return creci

@@ -16,6 +16,7 @@ class WebScraper:
 
     def config_driver(self) -> webdriver:
         options = webdriver.ChromeOptions()
+        options.add_argument("--headless=new")
         options.add_argument("start-maximized")
         options.add_argument('--disable-gpu')
         options.add_argument("--disable-application-cache")
@@ -55,7 +56,7 @@ class WebScraper:
             location = element.location_once_scrolled_into_view
 
             if previous_location is not None and location == previous_location:
-                print("O elemento parou de se mover.")
+                print("The element has stopped moving.")
                 break
 
             self.driver.execute_script(
@@ -66,7 +67,7 @@ class WebScraper:
 
             previous_location = location
             attempts += 1
-            print(f"Tentativa {attempts}: elemento movido para {location}")
+            print(f"Element moved to {location}")
 
     def get_elements(
         self,
