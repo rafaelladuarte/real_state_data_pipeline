@@ -14,6 +14,9 @@ requests = "*"
 pydrive = "*"
 google-api-python-client = "*"
 pymongo = "*"
+psycopg2-binary = "*"
+eralchemy = {extras = ["graphviz"], version = "*"}
+sqlalchemy-utils = "*"
 
 [dev-packages]
 
