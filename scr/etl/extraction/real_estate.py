@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from scraper import WebScraper
+from etl.extraction.scraper import WebScraper
 
 from utility.operator import (
     extract_date, extract_number

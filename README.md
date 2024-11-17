@@ -57,40 +57,42 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 - ✅ Escolha dos sites de imobiliárias e região alvo
 - ✅ Desenho do pipeline de ETL
 
-### Parte 2  e 3 (18 de Outubro a 15 de Novembro)
+### Parte 2 (18 de Outubro a 14 de Novembro)
+- ✅ Configuração do banco de dados MongoDB
 - ✅ Desenvolvimento de scripts de scraping para coleta de dados
-- Testes de scraping em massa
+- ✅ Testes de scraping em massa
 
-### Parte 4 (16 a 22 de Novembro)
+### Parte 3 (15 a 22 de Novembro)
+- ✅ Configuração do banco de dados PostgreSQL
+- ✅ Migração dados brutos para o PostgreSQL
+- ✅ Modelagem de Dados
 - Limpeza e tratamento dos dados brutos
-- Modelagem de Dados
-- Configuração do banco de dados (PostgreSQL/MongoDB)
 - Inserção dos dados modelados no banco de dados
 
-### Parte 5 (23 de Novembro a 6 de Dezembro)
+### Parte 4 (23 de Novembro a 6 de Dezembro)
 - Design e implementação do pipeline de ETL no Apache Airflow
 - Integração do scraping e transformação dentro do Airflow
 
-### Parte 6 (7 a 13 de Dezembro)
+### Parte 5 (7 a 13 de Dezembro)
 - Implementação de funções para cálculo de insights
 - Criação de views para os dashboards
 - Criação de dashboards interativos no Power BI
 - Conexão do Power BI ao banco de dados
 
-### Parte 7 (13 a 20 de Dezembro)
+### Parte 6 (13 a 20 de Dezembro)
 - Revisão do pipeline e otimização
 - Ajustes nos dashboards do Power BI
 
-### Parte 8 (21 a 27 de Dezembro)
+### Parte 7 (21 a 27 de Dezembro)
 - Documentação do projeto
 - Preparação do código e documentação para publicação
 
-### Parte 9 (27 a 10 de Janeiro)
+### Parte 8 (27 a 10 de Janeiro)
 - Revisão final
 - Gravação de Pitch Técnico
 - Publicação do projeto no GitHub
 
-### Parte 10 (11 a 24 de Janeiro)
+### Parte 9 (11 a 24 de Janeiro)
 - Coleta de feedback e ajustes finais
 
 ## Contribuições

@@ -6,46 +6,68 @@ from utility.image import (
     download_image, delete_image
 )
 
-mongo = MongoDB(uri=get_secret_value("MONGO_URI"))
-drive = GoogleDriver(
-    get_secret_value=get_secret_value('CRED_PATH'),
-    folder_id=get_secret_value('FOLDER_ID')
-)
 
-while True:
-    docs = mongo.get_documents_flag(
-        flag="images_url",
-        database="raw",
-        collection="imoveis"
+def treatment_images():
+    print("----------------  IMAGES ----------------")
+
+    mongo = MongoDB(uri=get_secret_value("MONGO_URI"))
+    drive = GoogleDriver(
+        creds_path=get_secret_value('CRED_PATH'),
+        folder_id=get_secret_value('FOLDER_ID')
     )
 
-    if len(docs) > 0:
-        break
+    b = 0
+    while True:
+        b += 1
 
-    for doc in docs:
-        id = doc["_id"]
-        original_image_url = doc[""]
+        if b == 3:
+            break
 
-        new_images_url = []
-        for i, url in enumerate(original_image_url[:5]):
-            filename = f'image_{i+1}.webp'
-            image_path, image_filename = download_image(url, filename)
+        print(f"=> Batch {b}")
+        print("Get documents in collection 'imoveis'")
+        docs = mongo.get_documents(
+            query={
+                "images_url": {
+                    "$exists": False
+                }
+            },
+            collection="imoveis"
+        )
 
-            link = drive.upload_image_to_drive(
-                image_path,
-                image_filename,
-                )
-            new_images_url.append(link)
+        if len(docs) == 0:
+            break
 
-            delete_image(image_path)
+        print("Start treatment images")
+        for doc in docs[:2]:
+            id = doc["_id"]
+            original_image_url = doc["original_imagens"]
 
-    mongo.update_document_set(
-        id=id,
-        set={
-            "$set": {
-                "images_url": new_images_url
-            }
-        },
-        database="raw",
-        collection="imoveis",
-    )
+            new_images_url = []
+            for i, url in enumerate(original_image_url[:2]):
+                filename = f'image_{i+1}.webp'
+                image_path, image_filename = download_image(url, filename)
+
+                link = drive.upload_image_to_drive(
+                    image_path,
+                    image_filename,
+                    )
+                new_images_url.append(link)
+
+                delete_image(image_path)
+
+        print(f"Images imovel {id} with {len(new_images_url)} images")
+        mongo.update_documents(
+            query={
+                "_id": id
+            },
+            set={
+                "$set": {
+                    "images_url": new_images_url
+                }
+            },
+            collection="imoveis",
+        )
+
+
+if __name__ == '__main__':
+    treatment_images()

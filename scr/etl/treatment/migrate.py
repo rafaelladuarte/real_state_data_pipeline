@@ -3,7 +3,7 @@ from infra.storage.postgres import PostgreDB
 from infra.security.secrets import get_secret_value
 
 
-def migrate_data_raw():
+def raw_data_to_postgres():
     print("---------------- RAW DATA TO POSTGRES----------------")
     mongo = MongoDB(
         uri=get_secret_value("MONGO_URI")
@@ -12,7 +12,7 @@ def migrate_data_raw():
         uri=get_secret_value("POSTGRESQL_URI")
     )
 
-    # postgres._create_database()
+    postgres._create_database()
     print("Get collection names in database 'raw'")
     list_collection_names = mongo.list_collection_names()
 
@@ -33,4 +33,4 @@ def migrate_data_raw():
 
 
 if __name__ == '__main__':
-    migrate_data_raw()
+    raw_data_to_postgres()

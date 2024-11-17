@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from scraper import WebScraper
+from etl.extraction.scraper import WebScraper
 from infra.storage.mongo import MongoDB
 from infra.security.secrets import get_secret_value
 

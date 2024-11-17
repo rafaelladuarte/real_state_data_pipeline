@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 
 from infra.security.secrets import get_secret_value
 from infra.storage.mongo import MongoDB
-from scraper import WebScraper
+from etl.extraction.scraper import WebScraper
 
 from utility.generator import (
     generator_email, generator_name, generator_phone
@@ -25,6 +25,10 @@ def get_property():
     b = 0
     while True:
         b += 1
+
+        if b == 3:
+            break
+
         print(f"=> Batch {b}")
         print("Get documents in collection 'links_imoveis'")
         docs = mongo.get_documents(
@@ -273,7 +277,7 @@ def get_property():
                 list_id.append(doc['_id'])
 
                 n += 1
-                print(n, sep=" ", end='')
+                print(n, sep=" ", end=' ')
 
             except Exception as e:
                 print(e)

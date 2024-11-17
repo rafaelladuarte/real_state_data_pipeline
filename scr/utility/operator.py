@@ -75,15 +75,28 @@ def treatment_string(text):
 
 
 if __name__ == '__main__':
+    # test_cases = [
+    #     '3 banheiro',
+    #     'R$ 280.000',
+    #     'R$ 1.800.000,00',
+    #     '45,67',
+    #     '1.234,56',
+    #     'https://www.zapimoveis.com.br/imobiliaria/734810/',
+    #     'O número é 12345 na URL',
+    #     'Aqui temos um número decimal: 123.45 e outro 6.789',
+    # ]
+
+    # for case in test_cases:
+    #     result = extract_number(case)
+    #     print(f"'{case}' -> {result}")
+
     test_cases = [
-        '3 banheiro',
-        'R$ 280.000',
-        'R$ 1.800.000,00',
-        '45,67',
-        '1.234,56',
-        'https://www.zapimoveis.com.br/imobiliaria/734810/',
-        'O número é 12345 na URL',
-        'Aqui temos um número decimal: 123.45 e outro 6.789',
+        "Anúncio criado em 25 de julho de 2024, atualizado há 3 semanas.",
+        "Desde 22 de agosto de 2018.",
+        "Anúncio criado em 14 de maio de 2024, atualizado há 1 mês.",
+        "Anúncio criado em 6 de setembro de 2024, atualizado há 3 dias.",
+        "Anúncio criado em 17 de agosto de 2024, atualizado há 10 horas.",
+        "Anúncio criado em 18 de outubro de 2024."
     ]
 
     for case in test_cases:
