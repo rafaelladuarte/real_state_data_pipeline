@@ -135,6 +135,15 @@ dmypy.json
 *.json
 
 csv/
+logs/
+plugins/
+
+Pipfile
+Pipfile.lock
+
+.vscode/
+
+rascunho_docker/
 
 Meu Imovel UDI
 udimeuimovel@gmail.com

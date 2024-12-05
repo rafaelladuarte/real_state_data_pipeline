@@ -62,14 +62,21 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 - ✅ Desenvolvimento de scripts de scraping para coleta de dados
 - ✅ Testes de scraping em massa
 
-### Parte 3 (15 a 22 de Novembro)
+Lembrete:
+- Implementar paginação na busca de links
+- Implementar coleta de numero de telefone das imobiliarias
+
+### Parte 3 (15 a 20 de Novembro)
 - ✅ Configuração do banco de dados PostgreSQL
 - ✅ Migração dados brutos para o PostgreSQL
 - ✅ Modelagem de Dados
-- Limpeza e tratamento dos dados brutos
-- Inserção dos dados modelados no banco de dados
+- ✅ Limpeza e tratamento dos dados brutos
+- ✅ Inserção dos dados modelados no banco de dados
 
-### Parte 4 (23 de Novembro a 6 de Dezembro)
+Lembrete:
+- Implementar um campo de hash para garantir a unicidade de cada imóvel.
+
+### Parte 4 (21 de Novembro a 6 de Dezembro)
 - Design e implementação do pipeline de ETL no Apache Airflow
 - Integração do scraping e transformação dentro do Airflow
 
