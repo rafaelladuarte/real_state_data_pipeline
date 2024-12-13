@@ -1,9 +1,9 @@
-from infra.storage.mongo import MongoDB
-from infra.security.secrets import get_secret_value
-from utility.operator import (
+from scripts.infra.storage.mongo import MongoDB
+from scripts.infra.security.secrets import get_secret_value
+from scripts.utility.operator import (
     extract_date, extract_number, extract_address
 )
-from etl.treatment.images import treatment_images
+from scripts.etl.treatment.images import treatment_images
 
 
 def treat_property():

@@ -1,29 +1,51 @@
-from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow import DAG
 
 from datetime import datetime
 
 
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'retries': 1,
+}
+
 with DAG(
     dag_id="extraction",
+    default_args=default_args,
     start_date=datetime(2024, 12, 10),
     # schedule="0 0 * * *"
     schedule_interval=None,
 ) as dag:
-    links = BashOperator(
+    links = DockerOperator(
         task_id="get_links_property",
-        bash_command='python /opt/airflow/scr/etl/extraction/links.py'
+        image="etl-scripts",
+        api_version="auto",
+        auto_remove=True,
+        command="etl/extraction/links.py",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="bridge",
     )
 
-    property = BashOperator(
+    property = DockerOperator(
         task_id="get_property",
-        bash_command='python /opt/airflow/scr/etl/extraction/property.py'
+        image="etl-scripts",
+        api_version="auto",
+        auto_remove=True,
+        command="etl/extraction/property.py",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="bridge",
     )
 
-    real_state = BashOperator(
+    real_state = DockerOperator(
         task_id="get_real_state",
-        bash_command='python /opt/airflow/scr/etl/extraction/real_state.py'
+        image="etl-scripts",
+        api_version="auto",
+        auto_remove=True,
+        command="etl/extraction/real_state.py",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="bridge",
     )
 
     start_treatment = TriggerDagRunOperator(
@@ -33,4 +55,4 @@ with DAG(
         deferrable=True,
     )
 
-    links >> property >> real_state
+    links >> property >> real_state >> start_treatment

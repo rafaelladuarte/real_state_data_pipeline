@@ -2,10 +2,10 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 
-from utility.image import (
+from scripts.utility.image import (
     delete_image, download_image
 )
-from security.secrets import get_secret_value
+from scripts.infra.security.secrets import get_secret_value
 
 
 class GoogleDriver:

@@ -1,33 +1,20 @@
-from infra.security.secrets import get_secret_value
+from scripts.infra.security.secrets import get_secret_value
 
-from datetime import datetime
+from pymongo import MongoClient
+import json
 
-import subprocess
-import os
-
-
-def backup_mongo():
-
-    mongo_uri = get_secret_value("MONGO_URI")
-    backup_dir = "backup/"
-
-    today = datetime.now().strftime("%Y%m%d")
-    backup_path = os.path.join(backup_dir, f"backup_{today}")
-
-    if not os.path.exists(backup_path):
-        os.makedirs(backup_path)
-
-    command = [
-        "mongodump",
-        "--uri", mongo_uri,
-        "--out", backup_path
-    ]
-
-    try:
-        subprocess.run(command, check=True)
-        print(f"Backup concluído com sucesso em {backup_path}")
-    except subprocess.CalledProcessError as e:
-        print(f"Erro ao executar o backup: {e}")
+client = MongoClient(get_secret_value("MONGO_URI"))
+db = client["real_state"]
 
 
-backup_mongo()
+def export_collections_to_json(db):
+    for collection_name in db.list_collection_names():
+        collection = db[collection_name]
+        data = list(collection.find())
+
+        with open(f"scripts/backup/{collection_name}.json", "w") as json_file:
+            json.dump(data, json_file, default=str, indent=4)
+        print(f"Coleção {collection_name} exportada")
+
+
+export_collections_to_json(db)

@@ -1,6 +1,6 @@
-from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow import DAG
 
 from datetime import datetime
 
@@ -12,14 +12,24 @@ with DAG(
     schedule_interval=None,
 ) as dag:
 
-    property = BashOperator(
+    property = DockerOperator(
         task_id="treat_property",
-        bash_command='python /opt/airflow/scr/etl/treatment/property.py'
+        image="etl-scripts",
+        api_version="auto",
+        auto_remove=True,
+        command="etl/treatment/property.py",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="bridge",
     )
 
-    real_state = BashOperator(
+    real_state = DockerOperator(
         task_id="treat_real_state",
-        bash_command='python /opt/airflow/scr/etl/treatment/real_state.py'
+        image="etl-scripts",
+        api_version="auto",
+        auto_remove=True,
+        command="etl/treatment/real_state.py",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="bridge",
     )
 
     start_load = TriggerDagRunOperator(

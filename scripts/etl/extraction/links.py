@@ -1,8 +1,8 @@
 from selenium.webdriver.common.by import By
 
-from etl.extraction.scraper import WebScraper
-from infra.storage.mongo import MongoDB
-from infra.security.secrets import get_secret_value
+from scripts.etl.extraction.scraper import WebScraper
+from scripts.infra.storage.mongo import MongoDB
+from scripts.infra.security.secrets import get_secret_value
 
 from datetime import datetime
 from time import sleep
@@ -14,9 +14,9 @@ mongo = MongoDB(
 
 def get_links_property():
     tipos = [
-        "casas",
+        # "casas",
         # "apartamentos",
-        # "studio",
+        "studio",
         # "quitinetes", "casas-de-condominio",
         # "cobertura", "flat", "float",
     ]

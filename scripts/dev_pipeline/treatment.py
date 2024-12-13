@@ -1,5 +1,5 @@
-from etl.treatment.property import treat_property
-from etl.treatment.real_state import treat_real_state
+from scripts.etl.treatment.property import treat_property
+from scripts.etl.treatment.real_state import treat_real_state
 
 treat_property()
 

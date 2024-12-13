@@ -1,7 +1,7 @@
-from infra.storage.driver import GoogleDriver
-from infra.security.secrets import get_secret_value
+from scripts.infra.storage.driver import GoogleDriver
+from scripts.infra.security.secrets import get_secret_value
 
-from utility.image import (
+from scripts.utility.image import (
     download_image, delete_image
 )
 

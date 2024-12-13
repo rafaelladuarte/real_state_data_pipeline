@@ -10,15 +10,10 @@ x-airflow-common:
     dockerfile: Dockerfile
   environment:
     &airflow-common-env
-    MONGO_URI: ${MONGO_URI}
-    GOOGLEAPI_KEY: ${GOOGLEAPI_KEY}
-    FOLDER_ID: ${FOLDER_ID}
-    CRED_PATH: ${CRED_PATH}
-    POSTGRESQL_URI: ${POSTGRESQL_URI}
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow_postgres/airflow
     # For backward compatibility, with Airflow <2.3
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow_postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'  # Uncomment to see some tutorials and examples
@@ -29,22 +24,45 @@ x-airflow-common:
     - ${AIRFLOW_DAGS}:/opt/airflow/dags
     - ${AIRFLOW_LOGS}:/opt/airflow/logs
     - ${AIRFLOW_PLUGINS}:/opt/airflow/plugins
-    - ${AIRFLOW_SECRETS}:/opt/secrets
-    - ${AIRFLOW_SCRIPTS}:/opt/airflow/scr
+    - /var/run/docker.sock:/var/run/docker.sock
+    # - ${AIRFLOW_SECRETS}:/opt/secrets
+    # - ${AIRFLOW_SCRIPTS}:/opt/airflow/scr
   networks:
     - airflow
-  user: "${AIRFLOW_UID:-50000}:0"
+  user: "${AIRFLOW_UID:-50000}:${DOCKER_GID}"
   depends_on:
     &airflow-common-depends-on
-    postgres:
+    airflow_postgres:
       condition: service_healthy
-
+   
 services:
 
-  scraper:
+  real_state_postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: real_state
+    ports:
+      - "5434:5432"
+    volumes:
+      - real_state_postgres_data:/var/lib/postgresql/data
+
+  scripts:
     build:
-      context: .
-    image: scraper:latest
+      context: ./scripts
+      dockerfile: Dockerfile
+    container_name: scripts-container
+    environment:
+      GOOGLEAPI_KEY: ${GOOGLEAPI_KEY}
+      FOLDER_ID: ${FOLDER_ID}
+      CRED_PATH: ${CRED_PATH}
+      MONGO_URI: ${MONGO_URI}
+      POSTGRESQL_URI: ${POSTGRESQL_URI}
+    volumes:
+      - ./scripts:/app
+    working_dir: /app
+    entrypoint: ["python3"]
 
   mongo:
     image: mongo
@@ -76,7 +94,7 @@ services:
       retries: 5
     restart: always
 
-  airflow-webserver:
+  airflow_webserver:
     <<: *airflow-common
     command: webserver
     ports:
@@ -89,10 +107,10 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      airflow-init:
+      airflow_init:
         condition: service_completed_successfully
 
-  airflow-scheduler:
+  airflow_scheduler:
     <<: *airflow-common
     command: scheduler
     healthcheck:
@@ -103,10 +121,10 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      airflow-init:
+      airflow_init:
         condition: service_completed_successfully
 
-  postgres:
+  airflow_postgres:
     image: postgres:13
     networks:
       - airflow
@@ -114,15 +132,17 @@ services:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
+    ports:
+      - "5433:5432"
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
+      - airflow_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
       retries: 5
     restart: always
 
-  airflow-init:
+  airflow_init:
     <<: *airflow-common
     entrypoint: /bin/bash
     # yamllint disable rule:line-length
@@ -204,4 +224,5 @@ networks:
     airflow:
 
 volumes:
-  postgres-db-volume:
+  airflow_postgres_data:
+  real_state_postgres_data:

@@ -1,6 +1,6 @@
-from etl.load.migrate import treat_data_to_postgres
-from infra.security.secrets import get_secret_value
-from infra.storage.postgres import PostgreDB
+from scripts.etl.load.migrate import treat_data_to_postgres
+from scripts.infra.security.secrets import get_secret_value
+from scripts.infra.storage.postgres import PostgreDB
 
 postgres = PostgreDB(
     uri=get_secret_value("POSTGRESQL_URI")

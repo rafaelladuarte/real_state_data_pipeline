@@ -1,25 +1,25 @@
 from scripts.infra.security.secrets import get_secret_value
 
-import subprocess
+from pymongo import MongoClient
+
+import json
+import os
 
 
-def restore_mongo():
-
-    mongo_uri = get_secret_value("MONGO_URI")
-    backup_dir = "/caminho/do/backup/backup_YYYYMMDD"
-
-    command = [
-        "mongorestore",
-        "--uri", mongo_uri,
-        "--drop",
-        backup_dir
-    ]
-
-    try:
-        subprocess.run(command, check=True)
-        print(f"Restauração concluída com sucesso do diretório {backup_dir}")
-    except subprocess.CalledProcessError as e:
-        print(f"Erro ao restaurar o backup: {e}")
+client = MongoClient(get_secret_value('MONGO_URI'))
+db = client["real_state"]
 
 
-restore_mongo()
+def restore_collections_from_json(db, directory="scripts/backup"):
+    for filename in os.listdir(directory):
+        if filename.endswith(".json"):
+            collection_name = filename.replace(".json", "")
+            collection = db[collection_name]
+            with open(os.path.join(directory, filename), "r") as json_file:
+                data = json.load(json_file)
+                if data:
+                    collection.insert_many(data)
+                    print(f"Coleção {collection_name} restaurada.")
+
+
+restore_collections_from_json(db)

@@ -1,6 +1,6 @@
-from infra.storage.mongo import MongoDB
-from infra.storage.postgres import PostgreDB
-from infra.security.secrets import get_secret_value
+from scripts.infra.storage.mongo import MongoDB
+from scripts.infra.storage.postgres import PostgreDB
+from scripts.infra.security.secrets import get_secret_value
 
 
 def treat_data_to_postgres():

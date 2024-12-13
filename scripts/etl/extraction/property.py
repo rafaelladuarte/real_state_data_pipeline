@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
 
-from infra.security.secrets import get_secret_value
-from infra.storage.mongo import MongoDB
-from etl.extraction.scraper import WebScraper
+from scripts.infra.security.secrets import get_secret_value
+from scripts.infra.storage.mongo import MongoDB
+from scripts.etl.extraction.scraper import WebScraper
 
-from utility.generator import (
+from scripts.utility.generator import (
     generator_email, generator_name, generator_phone
 )
 from datetime import datetime
@@ -23,8 +23,8 @@ def get_property():
     while True:
 
         b += 1
-        if b == 3:
-            break
+        # if b == 3:
+        #     break
 
         print(f"=> Batch {b}")
         print("Get documents in collection 'links_imoveis'")
