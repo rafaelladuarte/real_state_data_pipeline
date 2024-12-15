@@ -20,6 +20,7 @@ with DAG(
         command="etl/treatment/property.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        mount_tmp_dir=False
     )
 
     real_state = DockerOperator(
@@ -30,6 +31,7 @@ with DAG(
         command="etl/treatment/real_state.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        mount_tmp_dir=False
     )
 
     start_load = TriggerDagRunOperator(

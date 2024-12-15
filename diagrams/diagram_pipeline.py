@@ -1,7 +1,6 @@
 from diagrams.custom import Custom
 from diagrams import Diagram, Cluster, Edge
 from diagrams.onprem.database import MongoDB
-from diagrams.onprem.container import Docker
 from diagrams.onprem.workflow import Airflow
 from diagrams.onprem.database import PostgreSQL
 from diagrams.onprem.client import User, Client
@@ -19,8 +18,7 @@ with Diagram(
 ):
     user = User("Usuário Final")
 
-    with Cluster("Infra"):
-        docker = Docker("Docker Compose")
+    with Cluster("Docker"):
 
         with Cluster("Database"):
             postgres = PostgreSQL("PostgreSQL")
@@ -29,16 +27,14 @@ with Diagram(
         with Cluster("Orchestration"):
             airflow = Airflow("Airflow")
 
-    with Cluster("ETL"):
-        python_scraper = Python("1. Extraction")
-        python_treatment = Python("2. Treatment")
-        power_bi = Custom("3. Load", "images/powerbi_logo.png")
+        with Cluster("ETL Scripts"):
+            python_scraper = Python("1. Extraction")
+            python_treatment = Python("2. Treatment")
+            sql = Custom("3. Load", "images/sql.png")
+
+    dashboard = Custom("Dashboard", "images/dash_plotly.png")
 
     web_page = Client("Web Page")
-
-    docker >> airflow
-    docker >> postgres
-    docker >> mongodb
 
     airflow >> Edge(color="purple", style="bold") \
         >> python_scraper >> Edge(color="darkgreen", style="bold") \
@@ -49,9 +45,14 @@ with Diagram(
     airflow >> Edge(color="purple", style="bold") \
         >> python_treatment >> Edge(color="blue", style="bold") \
             >> mongodb >> Edge(color="blue", style="bold") \
-            >> python_treatment >> Edge(color="blue", style="bold") \
+            >> python_treatment >> Edge(color="blue", style="bold")
+
+    airflow >> Edge(color="purple", style="bold") \
+        >> sql >> Edge(color="red", style="bold") \
+            >> mongodb >> Edge(color="red", style="bold") \
+            >> sql >> Edge(color="red", style="bold") \
             >> postgres
 
     postgres >> Edge(color="orange", style="bold") \
-        >> power_bi >> Edge(color="orange", style="bold") \
+        >> dashboard >> Edge(color="orange", style="bold") \
         >> user

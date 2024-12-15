@@ -26,6 +26,7 @@ with DAG(
         command="etl/extraction/links.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        mount_tmp_dir=False
     )
 
     property = DockerOperator(
@@ -36,6 +37,7 @@ with DAG(
         command="etl/extraction/property.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        mount_tmp_dir=False
     )
 
     real_state = DockerOperator(
@@ -46,6 +48,7 @@ with DAG(
         command="etl/extraction/real_state.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        mount_tmp_dir=False
     )
 
     start_treatment = TriggerDagRunOperator(
@@ -55,4 +58,5 @@ with DAG(
         deferrable=True,
     )
 
-    links >> property >> real_state >> start_treatment
+    links >> property >> real_state 
+    # >> start_treatment

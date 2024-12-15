@@ -24,12 +24,15 @@ x-airflow-common:
     - ${AIRFLOW_DAGS}:/opt/airflow/dags
     - ${AIRFLOW_LOGS}:/opt/airflow/logs
     - ${AIRFLOW_PLUGINS}:/opt/airflow/plugins
+    - ${AIRFLOW_SECRETS}:/opt/secrets
+    # CONFIGURAÇÃO PROPRIA
+    # - ${PATH_SCRIPTS}:/host_scripts
+    # - ${PATH_HOST_ENV_PYTHON}:/host_venv
     - /var/run/docker.sock:/var/run/docker.sock
-    # - ${AIRFLOW_SECRETS}:/opt/secrets
-    # - ${AIRFLOW_SCRIPTS}:/opt/airflow/scr
   networks:
     - airflow
   user: "${AIRFLOW_UID:-50000}:${DOCKER_GID}"
+  # user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
     airflow_postgres:
@@ -37,8 +40,20 @@ x-airflow-common:
    
 services:
 
+  etl_scripts:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile
+    image: etl_scripts
+    environment:
+    volumes:
+      - ./scripts:/app/scripts
+    working_dir: /app/scripts
+    entrypoint: ["python3"]
+
   real_state_postgres:
     image: postgres:13
+    container_name: real_state_postgres
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
@@ -47,22 +62,6 @@ services:
       - "5434:5432"
     volumes:
       - real_state_postgres_data:/var/lib/postgresql/data
-
-  scripts:
-    build:
-      context: ./scripts
-      dockerfile: Dockerfile
-    container_name: scripts-container
-    environment:
-      GOOGLEAPI_KEY: ${GOOGLEAPI_KEY}
-      FOLDER_ID: ${FOLDER_ID}
-      CRED_PATH: ${CRED_PATH}
-      MONGO_URI: ${MONGO_URI}
-      POSTGRESQL_URI: ${POSTGRESQL_URI}
-    volumes:
-      - ./scripts:/app
-    working_dir: /app
-    entrypoint: ["python3"]
 
   mongo:
     image: mongo

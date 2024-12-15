@@ -23,14 +23,15 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 - **Extrair** dados como preço, localização e características dos imóveis a partir de sites de imobiliárias.
 - **Transformar** os dados brutos por meio de limpeza e cálculos de insights (ex. preço médio por bairro, variação de preços por características).
 - **Carregar** os dados limpos e processados em um banco de dados (PostgreSQL ou MongoDB).
-- **Visualizar** os dados por meio de um dashboard interativo no Power BI, facilitando a análise de tendências no mercado imobiliário.
+- **Visualizar** os dados por meio de um dashboard interativo, facilitando a análise de tendências no mercado imobiliário.
 
 ## Tecnologias Utilizadas
 
+- **Docker**: 
 - **Python**: Linguagem principal para desenvolver os scripts de scraping e transformação de dados.
 - **Apache Airflow**: Orquestração e gerenciamento do pipeline de ETL.
 - **PostgreSQL/MongoDB**: Armazenamento dos dados transformados para consulta e análise.
-- **Power BI**: Visualização interativa dos dados e criação de dashboards.
+- **Dash Plotly**: Visualização interativa dos dados e criação de dashboards.
 - **Selenium**: Ferramentas para scraping de dados dos sites de imobiliárias.
 
 ## Estrutura do Pipeline
@@ -52,12 +53,12 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 
 ## Cronograma de Execução
 
-### Parte 1 (14 a 17 de Outubro)
+### Parte 1
 - ✅ Planejamento e definição de escopo
 - ✅ Escolha dos sites de imobiliárias e região alvo
 - ✅ Desenho do pipeline de ETL
 
-### Parte 2 (18 de Outubro a 14 de Novembro)
+### Parte 2
 - ✅ Configuração do banco de dados MongoDB
 - ✅ Desenvolvimento de scripts de scraping para coleta de dados
 - ✅ Testes de scraping em massa
@@ -66,7 +67,7 @@ Lembrete:
 - Implementar paginação na busca de links
 - Implementar coleta de numero de telefone das imobiliarias
 
-### Parte 3 (15 a 20 de Novembro)
+### Parte 3
 - ✅ Configuração do banco de dados PostgreSQL
 - ✅ Migração dados brutos para o PostgreSQL
 - ✅ Modelagem de Dados
@@ -76,30 +77,29 @@ Lembrete:
 Lembrete:
 - Implementar um campo de hash para garantir a unicidade de cada imóvel.
 
-### Parte 4 (21 de Novembro a 6 de Dezembro)
+### Parte 4
 - Design e implementação do pipeline de ETL no Apache Airflow
 - Integração do scraping e transformação dentro do Airflow
 
-### Parte 5 (7 a 13 de Dezembro)
+### Parte 5
 - Implementação de funções para cálculo de insights
 - Criação de views para os dashboards
-- Criação de dashboards interativos no Power BI
-- Conexão do Power BI ao banco de dados
+- Criação de dashboards interativos
 
-### Parte 6 (13 a 20 de Dezembro)
+### Parte 6
 - Revisão do pipeline e otimização
 - Ajustes nos dashboards do Power BI
 
-### Parte 7 (21 a 27 de Dezembro)
+### Parte 7
 - Documentação do projeto
 - Preparação do código e documentação para publicação
 
-### Parte 8 (27 a 10 de Janeiro)
+### Parte 8
 - Revisão final
 - Gravação de Pitch Técnico
 - Publicação do projeto no GitHub
 
-### Parte 9 (11 a 24 de Janeiro)
+### Parte 9
 - Coleta de feedback e ajustes finais
 
 ## Contribuições

@@ -16,8 +16,9 @@ def get_links_property():
     tipos = [
         # "casas",
         # "apartamentos",
-        "studio",
-        # "quitinetes", "casas-de-condominio",
+        # "studio",
+        # "quitinetes",
+        "casas-de-condominio",
         # "cobertura", "flat", "float",
     ]
     for tipo in tipos:
