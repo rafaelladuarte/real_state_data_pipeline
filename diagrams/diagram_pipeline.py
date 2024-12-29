@@ -20,14 +20,16 @@ with Diagram(
 
     with Cluster("Docker"):
 
-        with Cluster("Database"):
+        with Cluster("Container PostgreSQL"):
             postgres = PostgreSQL("PostgreSQL")
+
+        with Cluster("Container MongoDB"):
             mongodb = MongoDB("MongoDB")
 
-        with Cluster("Orchestration"):
+        with Cluster("Container Orchestration"):
             airflow = Airflow("Airflow")
 
-        with Cluster("ETL Scripts"):
+        with Cluster("Container ETL Scripts"):
             python_scraper = Python("1. Extraction")
             python_treatment = Python("2. Treatment")
             sql = Custom("3. Load", "images/sql.png")
