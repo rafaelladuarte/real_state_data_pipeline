@@ -7,6 +7,8 @@ from scripts.etl.extraction.scraper import WebScraper
 from scripts.utility.generator import (
     generator_email, generator_name, generator_phone
 )
+
+from collections import defaultdict
 from datetime import datetime
 from time import sleep
 from copy import copy
@@ -41,6 +43,7 @@ def get_property():
             break
 
         data = []
+        list_id_error = defaultdict(list)
         list_id = []
 
         print("Start Scraper")
@@ -256,7 +259,7 @@ def get_property():
                     "suite": suites,
                     "outros": others,
                     "endereco": address,
-                    "telefone": contacts,                   # ERRO
+                    "telefone": contacts,     # ERRO
                     "imobiliaria_url": url_mobi,
                     "original_imagens": original_image_urls,
                     "data_anuncio": create_update,
@@ -270,7 +273,7 @@ def get_property():
                 print(title)
 
             except Exception as e:
-                print(e)
+                list_id_error[str(e)].append(doc['_id'])
 
             scraper.close_driver()
 
@@ -283,11 +286,35 @@ def get_property():
             },
             set={
                 "$set": {
-                    "scraper": True
+                    "scraper": True,
+                    "updated_dt": datetime.now().strftime(
+                        "%d-%m-%Y %H:%M:%S"
+                    )
                 }
             },
             collection='links_imoveis'
         )
+
+        if len(list_id_error) > 0:
+            for error_type, ids_error in list_id_error.items():
+
+                mongo.update_documents(
+                    query={
+                        "_id": {
+                            "$in": ids_error
+                        }
+                    },
+                    set={
+                        "$set": {
+                            "scraper": True,
+                            "error": error_type,
+                            "updated_dt": datetime.now().strftime(
+                                "%d-%m-%Y %H:%M:%S"
+                            )
+                        }
+                    },
+                    collection='links_imoveis'
+                )
 
         print("Insert documents in collection 'imoveis'")
         mongo.insert_documents(

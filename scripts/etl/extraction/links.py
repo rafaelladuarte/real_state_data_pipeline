@@ -16,16 +16,29 @@ mongo = MongoDB(
 
 def get_links_property():
     tipos = [
-        "casas",
-        # "apartamentos",
+        # "casas",
+        "apartamentos",
         # "studio",
         # "quitinetes",
         # "casas-de-condominio",
         # "cobertura", "flat", "float",
     ]
-    for tipo in tipos:
-        print(f"---------------- {tipo.upper()} ----------------")
-        url = f"https://www.zapimoveis.com.br/venda/{tipo}/mg+uberlandia/"
+    modos = ["venda", "aluguel"]
+
+    blends = [
+        (
+            modo,
+            tipo
+        )
+        for tipo in tipos
+        for modo in modos
+    ]
+
+    for modo, tipo in blends:
+
+        url = f"https://www.zapimoveis.com.br/{modo}/{tipo}/mg+uberlandia/"
+
+        print(f"----------- {tipo.upper()} {modo.upper()} -----------")
 
         scraper = WebScraper()
         scraper.get_driver(url)
@@ -52,7 +65,7 @@ def get_links_property():
         for page in range(1, pages):
             data = []
 
-            if page == 5:
+            if page == 4:
                 break
 
             print(f"- PÁGINA {page}")
@@ -99,7 +112,7 @@ def get_links_property():
                         {
                             "link": link,
                             "tipo": tipo,
-                            "modo": "venda",
+                            "modo": modo,
                             "created_dt": datetime.now().strftime(
                                 "%d-%m-%Y %H:%M:%S"
                             )

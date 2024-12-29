@@ -6,7 +6,7 @@ from scripts.utility.image import (
 )
 
 
-def treatment_images(original_images):
+def treatment_images(original_images, hash):
 
     drive = GoogleDriver(
         creds_path=get_secret_value('CRED_PATH'),
@@ -15,7 +15,7 @@ def treatment_images(original_images):
 
     new_images_url = []
     for i, url in enumerate(original_images[:2]):
-        filename = f'image_{i+1}.webp'
+        filename = f'{hash}_{i+1}.webp'
         image_path, image_filename = download_image(url, filename)
 
         link = drive.upload_image_to_drive(

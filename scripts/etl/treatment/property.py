@@ -5,6 +5,8 @@ from scripts.utility.operator import (
 )
 from scripts.etl.treatment.images import treatment_images
 
+from datetime import datetime
+
 import hashlib
 
 
@@ -46,13 +48,14 @@ def treat_property():
 
             street, number, district = extract_address(doc["endereco"])
 
-            images = treatment_images(doc["original_imagens"])
-
             values = (
                 f"{doc['titulo_anuncio']}|{doc['endereco']}|"
                 f"{doc['preco']}|{data_cadastro}"
             )
+
             unique_hash = hashlib.sha256(values.encode('utf-8')).hexdigest()
+
+            images = treatment_images(doc["original_imagens"], unique_hash)
 
             data.append(
                 {
@@ -92,7 +95,10 @@ def treat_property():
             },
             set={
                 "$set": {
-                    "scraper": True
+                    "treat": True,
+                    "updated_dt": datetime.now().strftime(
+                        "%d-%m-%Y %H:%M:%S"
+                    )
                 }
             },
             collection='raw_imoveis'
