@@ -74,8 +74,10 @@ Lembrete:
 - ✅ Inserção dos dados modelados no banco de dados
 
 ### Parte 4
-- 🔁 Design e implementação do pipeline de ETL no Apache Airflow
-- Integração do scraping e transformação dentro do Airflow
+- 🔁 Design e Implementação do Pipeline de ETL no Apache Airflow
+- 🔁 Realização de testes manuais do Pipeline de ETL via Interface Web do Apache Airflow
+- Monitoramento e Controle do Pipeline por meio de Logs
+- Definição de Agendamento Regular para Execução
 
 ### Parte 5
 - Implementação de funções para cálculo de insights

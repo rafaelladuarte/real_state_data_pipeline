@@ -39,7 +39,7 @@ def get_real_state():
                 }
             },
             {
-                "$limit": 50
+                "$limit": 20
             }
         ]
 
@@ -145,7 +145,7 @@ def get_real_state():
             print("Update documents in collection 'raw_imoveis'")
             mongo.update_documents(
                 query={
-                    "imobiliaria": {
+                    "imobiliaria_url": {
                         "$in": list_get_mobi_url
                     }
                 },
