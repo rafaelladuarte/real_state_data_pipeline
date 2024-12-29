@@ -5,6 +5,8 @@ from scripts.utility.operator import (
 )
 from scripts.etl.treatment.images import treatment_images
 
+import hashlib
+
 
 def treat_property():
     print("---------------- TREATMENT PROPERTY ----------------")
@@ -12,6 +14,7 @@ def treat_property():
     mongo = MongoDB(
         uri=get_secret_value('MONGO_URI')
     )
+    mongo.create_hash_index("treat_imoveis")
 
     b = 0
     while True:
@@ -45,6 +48,12 @@ def treat_property():
 
             images = treatment_images(doc["original_imagens"])
 
+            values = (
+                f"{doc['titulo_anuncio']}|{doc['endereco']}|"
+                f"{doc['preco']}|{data_cadastro}"
+            )
+            unique_hash = hashlib.sha256(values.encode('utf-8')).hexdigest()
+
             data.append(
                 {
                     "titulo_anuncio": doc["titulo_anuncio"],
@@ -69,7 +78,8 @@ def treat_property():
                     "imagens": images,
                     "data_cadastro": data_cadastro,
                     "data_atualizacao": data_atualizacao,
-                    "data_coleta_imovel": data_coleta
+                    "data_coleta_imovel": data_coleta,
+                    "hash": unique_hash
                 }
             )
 
@@ -89,7 +99,7 @@ def treat_property():
         )
 
         print("Insert documents in collection 'treat_imoveis'")
-        mongo.insert_documents(
+        mongo.insert_hash_documents(
             documents=data,
             collection='treat_imoveis'
         )

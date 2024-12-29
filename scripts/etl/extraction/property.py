@@ -44,7 +44,7 @@ def get_property():
         list_id = []
 
         print("Start Scraper")
-        for doc in docs[:10]:
+        for doc in docs[:50]:
             link = doc['link']
 
             try:

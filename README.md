@@ -64,7 +64,6 @@ Este projeto visa automatizar o processo de coleta e análise de dados de imóve
 - ✅ Testes de scraping em massa
 
 Lembrete:
-- Implementar paginação na busca de links
 - Implementar coleta de numero de telefone das imobiliarias
 
 ### Parte 3
@@ -74,11 +73,8 @@ Lembrete:
 - ✅ Limpeza e tratamento dos dados brutos
 - ✅ Inserção dos dados modelados no banco de dados
 
-Lembrete:
-- Implementar um campo de hash para garantir a unicidade de cada imóvel.
-
 ### Parte 4
-- Design e implementação do pipeline de ETL no Apache Airflow
+- 🔁 Design e implementação do pipeline de ETL no Apache Airflow
 - Integração do scraping e transformação dentro do Airflow
 
 ### Parte 5

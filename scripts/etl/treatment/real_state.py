@@ -12,6 +12,11 @@ def treat_real_state():
         uri=get_secret_value('MONGO_URI')
     )
 
+    mongo.create_hash_index(
+        collection="treat_imobiliarias",
+        hash="id_imobiliaria"
+    )
+
     b = 0
     while True:
         b += 1
@@ -39,6 +44,7 @@ def treat_real_state():
             street, number, district = extract_address(
                 doc["endereco_imobiliaria"]
             )
+
             data.append(
                 {
                     "id_imobiliaria": extract_number(doc["imobiliaria"]),

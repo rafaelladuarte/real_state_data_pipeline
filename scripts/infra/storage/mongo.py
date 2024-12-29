@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from pymongo import MongoClient
+from pymongo import MongoClient, InsertOne, errors
 
 
 class MongoDB:
@@ -20,6 +20,37 @@ class MongoDB:
             coll.insert_many(documents)
         elif len(documents) == 1:
             coll.insert_one(documents[0])
+
+    def insert_hash_documents(self, documents: list, collection: str):
+        client = MongoClient(self._uri)
+        coll = client["real_state"][collection]
+
+        documents = [{**doc, '_id': ObjectId()} for doc in documents]
+
+        operations = [InsertOne(doc) for doc in documents]
+
+        try:
+            result = coll.bulk_write(operations, ordered=False)
+            print(f"Documentos inseridos com sucesso: {result.inserted_count}")
+        except errors.BulkWriteError as e:
+            duplicates = sum(
+                1
+                for err in e.details['writeErrors']
+                if err['code'] == 1000
+            )
+            print(f"Documentos ignorados por duplicação: {duplicates}")
+            other_errors = [
+                err
+                for err in e.details['writeErrors']
+                if err['code'] != 1000
+            ]
+            if other_errors:
+                raise errors.BulkWriteError(
+                    {
+                        "writeErrors": other_errors,
+                        "nInserted": e.details.get('nInserted', 0)
+                    }
+                )
 
     def get_documents(
         self,
@@ -120,3 +151,20 @@ class MongoDB:
         data = database.list_collection_names()
 
         return data
+
+    def create_hash_index(
+        self,
+        collection: str,
+        hash: str
+    ):
+        client = MongoClient(self._uri)
+        coll = client['real_state'][collection]
+
+        indexs_exists = coll.index_information()
+
+        index_name = f"{hash}_1"
+        if index_name not in indexs_exists:
+            coll.create_index([(hash, 1)], unique=True)
+            print(f"Index {hash} created in collection {collection}")
+        else:
+            print(f"Index {hash} already exists in collection {collection}")
