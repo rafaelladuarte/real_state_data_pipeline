@@ -16,14 +16,17 @@ mongo = MongoDB(
 
 def get_links_property():
     tipos = [
-        # "casas",
+        "casas",
         "apartamentos",
         # "studio",
         # "quitinetes",
         # "casas-de-condominio",
         # "cobertura", "flat", "float",
     ]
-    modos = ["venda", "aluguel"]
+    modos = [
+        # "venda",
+        "aluguel"
+    ]
 
     blends = [
         (
