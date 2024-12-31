@@ -2,9 +2,9 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 
-from scripts.utility.image import (
-    delete_image, download_image
-)
+# from scripts.utility.image import (
+#     delete_image, download_image
+# )
 from scripts.infra.security.secrets import get_secret_value
 
 
@@ -61,10 +61,10 @@ class GoogleDriver:
         return folder_id
 
     def upload_image_to_drive(
-            self,
-            image_path: str,
-            image_name: str,
-            folder_id: str = None
+        self,
+        image_path: str,
+        image_name: str,
+        folder_id: str = None
     ) -> str:
         if not folder_id:
             folder_id = self._folder_id
@@ -95,44 +95,74 @@ class GoogleDriver:
         public_link = f"https://drive.google.com/uc?id={file.get('id')}"
         return public_link
 
-    def list_files_in_drive(self):
+    def list_folder_in_drive(self) -> list[dict] | None:
         creds = Credentials.from_service_account_file(self._cred_path)
         service = build('drive', 'v3', credentials=creds)
 
         results = service.files().list(
-            pageSize=100, fields="nextPageToken, files(id, name, mimeType)"
+            q="mimeType='application/vnd.google-apps.folder'",
+            pageSize=1000,
+            fields="nextPageToken, files(id, name)"
         ).execute()
 
         items = results.get('files', [])
 
         if not items:
             print('Nenhum arquivo ou pasta encontrado.')
+            return None
         else:
-            print('Arquivos e pastas encontrados:')
-            for item in items:
-                print(f"{item['name']} ({item['id']}) - {item['mimeType']}")
+            print(f'Arquivos e pastas encontrados: {len(items)}')
+
+            return items
+
+    def delete_folder(
+        self,
+        folder_id: str = None
+    ) -> None:
+        if not folder_id:
+            folder_id = self._folder_id
+
+        creds = Credentials.from_service_account_file(self._cred_path)
+        service = build('drive', 'v3', credentials=creds)
+
+        try:
+            service.files().delete(fileId=folder_id).execute()
+            print(f"Pasta com ID {folder_id} foi apagada.")
+        except Exception as e:
+            print(f"Erro ao apagar a pasta: {e}")
 
 
 if __name__ == '__main__':
 
     drive = GoogleDriver(
-        get_secret_value=get_secret_value('CRED_PATH'),
+        creds_path=get_secret_value('CRED_PATH'),
         folder_id=get_secret_value('FOLDER_ID')
     )
 
-    base = "https://resizedimgs.zapimoveis.com.br/fit-in/870x707/vr.images.sp/"
-    image_urls = [
-        '5abc8dba84fc3c919ab2620b609d5a27.webp',
-        'fd4e0c11fcc1f4cfc81a2fc0c0dc61d9.webp'
-    ]
-    for i, url in enumerate(image_urls):
-        filename = f'image_{i+1}.webp'
-        image_path, image_filename = download_image(base + url, filename)
+    # drive.create_public_folder("real_state_data_pipeline_images")
 
-        link = drive.upload_image_to_drive(
-            image_path,
-            image_filename,
-            )
-        print(link)
+    items = drive.list_folder_in_drive()
 
-        delete_image(image_path)
+    for item in items:
+        print(f"{item['name']} ({item['id']})")
+        if item["name"] == "image_test":
+            folder_id = item['id']
+
+    # drive.delete_folder(folder_id)
+
+    # base = "https://resizedimgs.zapimoveis.com.br/fit-in/870x707/"
+    # image_urls = [
+    #     'vr.images.sp/5abc8dba84fc3c919ab2620b609d5a27.webp',
+    #     'vr.images.sp/fd4e0c11fcc1f4cfc81a2fc0c0dc61d9.webp'
+    # ]
+    # for i, url in enumerate(image_urls):
+    #     filename = f'image_{i+1}.webp'
+    #     image_path, image_filename = download_image(base + url, filename)
+
+    #     link = drive.upload_image_to_drive(
+    #         image_path,
+    #         image_filename,
+    #         )
+    #     print(link)
+
+    #     delete_image(image_path)

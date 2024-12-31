@@ -10,7 +10,7 @@ class MongoDB:
         self,
         documents: list,
         collection: str
-    ):
+    ) -> None:
         client = MongoClient(self._uri)
         coll = client["real_state"][collection]
 
@@ -21,7 +21,11 @@ class MongoDB:
         elif len(documents) == 1:
             coll.insert_one(documents[0])
 
-    def insert_hash_documents(self, documents: list, collection: str):
+    def insert_hash_documents(
+        self,
+        documents: list,
+        collection: str
+    ) -> None:
         client = MongoClient(self._uri)
         coll = client["real_state"][collection]
 
@@ -33,30 +37,24 @@ class MongoDB:
             result = coll.bulk_write(operations, ordered=False)
             print(f"Documentos inseridos com sucesso: {result.inserted_count}")
         except errors.BulkWriteError as e:
-            duplicates = sum(
+            duplicates = [
                 1
                 for err in e.details['writeErrors']
-                if err['code'] == 1000
-            )
-            print(f"Documentos ignorados por duplicação: {duplicates}")
+                if err['code'] == 11000
+            ]
+            print(f"- Documents ignored due to duplication: {len(duplicates)}")
             other_errors = [
                 err
                 for err in e.details['writeErrors']
-                if err['code'] != 1000
+                if err['code'] != 11000
             ]
-            if other_errors:
-                raise errors.BulkWriteError(
-                    {
-                        "writeErrors": other_errors,
-                        "nInserted": e.details.get('nInserted', 0)
-                    }
-                )
+            print(f"- Documents ignored for other errors: {len(other_errors)}")
 
     def get_documents(
         self,
         query: dict,
         collection: str
-    ):
+    ) -> list[dict]:
         client = MongoClient(self._uri)
         coll = client["real_state"][collection]
 
@@ -72,7 +70,7 @@ class MongoDB:
         query: dict,
         set: dict,
         collection: str
-    ):
+    ) -> None:
         client = MongoClient(self._uri)
         coll = client["real_state"][collection]
 
@@ -83,7 +81,7 @@ class MongoDB:
         query: dict,
         set: dict,
         collection: str
-    ):
+    ) -> None:
         client = MongoClient(self._uri)
         coll = client["real_state"][collection]
 
@@ -93,7 +91,7 @@ class MongoDB:
         self,
         pipeline: list,
         collection: str
-    ):
+    ) -> list[dict]:
         client = MongoClient(self._uri)
         coll = client["real_state"][collection]
 
@@ -108,7 +106,7 @@ class MongoDB:
     def find_missing_mobi_url(
         self,
         list_url: list,
-    ) -> list:
+    ) -> list[str]:
         client = MongoClient(self._uri)
         coll = client['real_state']['imobiliarias']
 
@@ -133,7 +131,7 @@ class MongoDB:
             self,
             flag: str,
             collection: str
-    ) -> list:
+    ) -> list[dict]:
         client = MongoClient(self._uri)
         coll = client['real_state'][collection]
 
@@ -144,7 +142,7 @@ class MongoDB:
 
         return data
 
-    def list_collection_names(self):
+    def list_collection_names(self) -> list[str]:
         client = MongoClient(self._uri)
         database = client['real_state']
 
@@ -156,7 +154,7 @@ class MongoDB:
         self,
         collection: str,
         hash: str
-    ):
+    ) -> None:
         client = MongoClient(self._uri)
         coll = client['real_state'][collection]
 

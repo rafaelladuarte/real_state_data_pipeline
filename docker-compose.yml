@@ -31,8 +31,8 @@ x-airflow-common:
     - /var/run/docker.sock:/var/run/docker.sock
   networks:
     - airflow
-  user: "${AIRFLOW_UID:-50000}:${DOCKER_GID}"
-  # user: "${AIRFLOW_UID:-50000}:0"
+  # user: "${AIRFLOW_UID:-50000}:${DOCKER_GID}"
+  user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
     airflow_postgres:
@@ -45,11 +45,15 @@ services:
       context: ./scripts
       dockerfile: Dockerfile
     image: etl_scripts
-    environment:
     volumes:
       - ./scripts:/app/scripts
     working_dir: /app/scripts
-    entrypoint: ["python3"]
+    depends_on:
+      - mongodb
+      - real_state_postgres
+    networks:
+      - airflow
+    entrypoint: ["bash", "-c", "source /app/venv/bin/activate && exec $0 \"$@\"", "python"]
 
   real_state_postgres:
     image: postgres:13
@@ -62,6 +66,8 @@ services:
       - "5434:5432"
     volumes:
       - real_state_postgres_data:/var/lib/postgresql/data
+    networks:
+      - airflow
 
   mongo:
     image: mongo
@@ -72,11 +78,13 @@ services:
       MONGO_INITDB_ROOT_USERNAME: username
       MONGO_INITDB_ROOT_PASSWORD: password
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD", "mongo", "--username", "username", "--password", "password", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: always
+    networks:
+      - airflow
 
   pgadmin:
     image: dpage/pgadmin4
@@ -87,11 +95,13 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@email.com
       PGADMIN_DEFAULT_PASSWORD: admin
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost/"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: always
+    networks:
+      - airflow
 
   airflow_webserver:
     <<: *airflow-common
@@ -221,6 +231,7 @@ services:
 
 networks:
     airflow:
+      driver: bridge
 
 volumes:
   airflow_postgres_data:

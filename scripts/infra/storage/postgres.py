@@ -58,7 +58,7 @@ class PostgreDB:
         self,
         table: str,
         query: str,
-    ):
+    ) -> None:
         try:
             engine = create_engine(self._uri)
             with engine.connect() as connection:
@@ -68,13 +68,11 @@ class PostgreDB:
         except Exception as e:
             print(f"Erro ao executar consultas SQL da tabela {table}: {e}")
 
-        return None
-
     def execute_query_transaction(
         self,
         table: str,
         query: str,
-    ):
+    ) -> None:
         try:
             engine = create_engine(self._uri)
             with Session(engine) as session:
@@ -84,12 +82,10 @@ class PostgreDB:
         except Exception as e:
             print(f"Erro ao executar consultas SQL da tabela {table}: {e}")
 
-        return None
-
     def execute_file_sql(
         self,
         file: str,
-    ):
+    ) -> None:
         try:
             engine = create_engine(self._uri)
             with Session(engine) as session:
@@ -97,5 +93,3 @@ class PostgreDB:
                 session.commit()
         except Exception as e:
             print(e)
-
-        return None

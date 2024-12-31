@@ -14,7 +14,7 @@ def treatment_images(original_images, hash):
     )
 
     new_images_url = []
-    for i, url in enumerate(original_images[:2]):
+    for i, url in enumerate(original_images[:10]):
         filename = f'{hash}_{i+1}.webp'
         image_path, image_filename = download_image(url, filename)
 

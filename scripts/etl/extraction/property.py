@@ -1,9 +1,9 @@
 from selenium.webdriver.common.by import By
 
-from scripts.infra.security.secrets import get_secret_value
-from scripts.infra.storage.mongo import MongoDB
 from scripts.etl.extraction.scraper import WebScraper
+from scripts.infra.storage.mongo import MongoDB
 
+from scripts.infra.security.secrets import get_secret_value
 from scripts.utility.generator import (
     generator_email, generator_name, generator_phone
 )
@@ -48,9 +48,8 @@ def get_property():
 
         print("Start Scraper")
         for doc in docs[:50]:
-            link = doc['link']
-
             try:
+                link = doc['link']
                 scraper = WebScraper()
                 scraper.get_driver(link)
 
@@ -270,12 +269,18 @@ def get_property():
 
                 list_id.append(doc['_id'])
 
-                print(title)
+                print(f"- {title}")
 
             except Exception as e:
                 list_id_error[str(e)].append(doc['_id'])
 
             scraper.close_driver()
+
+        print("Insert documents in collection 'imoveis'")
+        mongo.insert_documents(
+            documents=data,
+            collection='raw_imoveis'
+        )
 
         print("Update documents in collection 'links_imoveis'")
         mongo.update_documents(
@@ -315,12 +320,6 @@ def get_property():
                     },
                     collection='links_imoveis'
                 )
-
-        print("Insert documents in collection 'imoveis'")
-        mongo.insert_documents(
-            documents=data,
-            collection='raw_imoveis'
-        )
 
 
 if __name__ == '__main__':
