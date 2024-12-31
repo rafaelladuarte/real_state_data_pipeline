@@ -23,7 +23,7 @@ with DAG(
         image="etl-scripts",
         api_version="auto",
         auto_remove=True,
-        command="etl/extraction/links.py",
+        command="python3 scripts/etl/extraction/links.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
         mount_tmp_dir=False
@@ -34,7 +34,7 @@ with DAG(
         image="etl-scripts",
         api_version="auto",
         auto_remove=True,
-        command="etl/extraction/property.py",
+        command="python3 scripts/etl/extraction/property.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
         mount_tmp_dir=False
@@ -45,7 +45,7 @@ with DAG(
         image="etl-scripts",
         api_version="auto",
         auto_remove=True,
-        command="etl/extraction/real_state.py",
+        command="python3 scripts/etl/extraction/real_state.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
         mount_tmp_dir=False
