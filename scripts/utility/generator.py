@@ -4,7 +4,7 @@ from unidecode import unidecode   # type: ignore
 import random
 
 
-def generator_phone():
+def generator_phone() -> str:
     digit = ["9"]
     phone = []
     for i in range(0, 7):
@@ -13,12 +13,12 @@ def generator_phone():
     return phone
 
 
-def generator_name():
+def generator_name() -> str:
     return pessoa_random().nome
 
 
-def generator_email(nome):
-    name_sem_acento = unidecode(nome.lower())
+def generator_email(name: str) -> str:
+    name_sem_acento = unidecode(name.lower())
 
     parts_name = name_sem_acento.split()
     first_name = parts_name[0]

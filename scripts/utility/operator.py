@@ -1,11 +1,13 @@
-import re
 from datetime import datetime, timedelta
+from unidecode import unidecode
+
 import locale
+import re
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')
 
 
-def extract_date(text):
+def extract_date(text: str) -> tuple[str, str]:
     date_created, date_updated = None, None
     if text:
         months = {
@@ -57,7 +59,7 @@ def extract_date(text):
     return date_created, date_updated
 
 
-def extract_number(text):
+def extract_number(text: str) -> list[int] | int | None:
     if text:
         text = re.sub(r'(?<=\d)\.(?=\d{3}(?:\D|$))', '', text)
         text = text.replace(',', '.')
@@ -74,22 +76,22 @@ def extract_number(text):
         return numbers if len(numbers) > 1 else numbers[0] if numbers else None
 
 
-def treatment_text(text):
+def tokenize_and_standardize(text: str) -> bytes:
 
-    word_connect = ["com", "à", "e", "de", "a", "o", "da", "do", "para", "em"]
+    if not text:
+        return ""
 
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9\s.]", "", text)
+    normalized = unidecode(text)
 
-    words = text.split()
-    words_filter = [
-        word for word in words
-        if word not in word_connect
-    ]
+    normalized = normalized.lower()
 
-    new_text = "_".join(words_filter)
+    cleaned = re.sub(r"[^a-z0-9\s]", "", normalized)
 
-    return new_text
+    tokens = [token for token in cleaned.split() if token]
+
+    standardized_string = "_".join(tokens)
+
+    return standardized_string.encode('utf-8')
 
 
 def extract_address(text: str) -> tuple:
