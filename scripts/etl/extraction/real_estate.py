@@ -5,6 +5,7 @@ from scripts.infra.storage.mongo import MongoDB
 
 from scripts.infra.security.secrets import get_secret_value
 
+from collections import defaultdict
 from datetime import datetime
 from time import sleep
 
@@ -55,6 +56,7 @@ def get_real_state():
         print("Get 'imobiliaria_url'")
         list_id_imoveis = []
         list_all_mobi_url = []
+        list_id_error = defaultdict(list)
         for doc in docs:
             list_id_imoveis.extend(doc['list_id'])
             list_all_mobi_url.append(doc["_id"])
@@ -135,11 +137,18 @@ def get_real_state():
                 print(f'- {name}')
 
             except Exception as e:
-                print(e)
+                list_id_error[str(e)].append(doc['_id'])
 
             scraper.close_driver()
 
             sleep(2)
+
+        if len(data) > 0:
+            print("Insert documents in collection 'raw_imobiliarias'")
+            mongo.insert_documents(
+                documents=data,
+                collection='raw_imobiliarias'
+            )
 
         if len(list_get_mobi_url) > 0:
             print("Update documents in collection 'raw_imoveis'")
@@ -161,11 +170,26 @@ def get_real_state():
 
             )
 
-            print("Insert documents in collection 'raw_imobiliarias'")
-            mongo.insert_documents(
-                documents=data,
-                collection='raw_imobiliarias'
-            )
+        if len(list_id_error) > 0:
+            print("Update documents error in collection 'raw_imoveis'")
+            for error_type, ids_error in list_id_error.items():
+                mongo.update_documents(
+                    query={
+                        "_id": {
+                            "$in": ids_error
+                        }
+                    },
+                    set={
+                        "$set": {
+                            "get_mobi": True,
+                            "error_mobi": error_type,
+                            "updated_dt": datetime.now().strftime(
+                                "%d-%m-%Y %H:%M:%S"
+                            )
+                        }
+                    },
+                    collection='raw_imoveis'
+                )
 
 
 if __name__ == '__main__':

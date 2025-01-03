@@ -69,6 +69,7 @@ ON CONFLICT (id_imobiliaria) DO NOTHING;
 	
 -- Insere valores na tabela fato "imovel";
 INSERT INTO public.imovel(
+    id_imovel,
 	id_imobiliaria,
 	id_endereco_imovel,
 	id_tipo_imovel,
@@ -89,6 +90,7 @@ INSERT INTO public.imovel(
 	data_coleta_imovel
 )
 SELECT 
+    hash,
     B.id_imobiliaria,
     C.id_endereco,
     D.id_tipo,
@@ -136,4 +138,5 @@ INNER JOIN
 INNER JOIN 
     public.tipo_imovel D ON LOWER(A.tipo_imovel) = LOWER(D.tipo)
 INNER JOIN 
-    public.modo_imovel E ON LOWER(A.modo_imovel) = LOWER(E.modo);
+    public.modo_imovel E ON LOWER(A.modo_imovel) = LOWER(E.modo)
+ON CONFLICT (id_imovel) DO NOTHING;;

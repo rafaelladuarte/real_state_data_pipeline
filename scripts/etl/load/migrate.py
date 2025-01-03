@@ -2,6 +2,8 @@ from scripts.infra.storage.mongo import MongoDB
 from scripts.infra.storage.postgres import PostgreDB
 from scripts.infra.security.secrets import get_secret_value
 
+from datetime import datetime
+
 
 def treat_data_to_postgres():
     print("---------------- TREAT DATA TO POSTGRES----------------")
@@ -12,7 +14,7 @@ def treat_data_to_postgres():
     postgres = PostgreDB(
         uri=get_secret_value("POSTGRESQL_URI")
     )
-    # postgres._create_database()
+    postgres._create_database()
 
     list_collection_names = [
         "treat_imoveis",
@@ -43,7 +45,14 @@ def treat_data_to_postgres():
             query={
                 "_id": {"$in": documents_id}
             },
-            set={},
+            set={
+                "$set": {
+                    "data_migradação": True,
+                    "updated_dt": datetime.now().strftime(
+                        "%d-%m-%Y %H:%M:%S"
+                    )
+                }
+            },
             collection=collection_name
         )
 

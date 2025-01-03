@@ -9,8 +9,8 @@ postgres = PostgreDB(
 treat_data_to_postgres()
 
 files_sql = [
-    'scr/etl/modeling/create_tables_oficial.sql',
-    'scr/etl/modeling/insert_tables_oficial.sql',
+    'scripts/etl/modeling/create_tables_oficial.sql',
+    'scripts/etl/modeling/insert_tables_oficial.sql',
 ]
 
 print('----------- EXECUTE QUERY ----------')
