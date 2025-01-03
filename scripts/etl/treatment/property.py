@@ -1,7 +1,9 @@
 from scripts.infra.storage.mongo import MongoDB
 from scripts.infra.security.secrets import get_secret_value
 from scripts.utility.operator import (
-    extract_date, extract_number, extract_address, tokenize_and_standardize
+    extract_date, extract_number,
+    extract_address, tokenize_and_standardize,
+    convert_format_data
 )
 from scripts.etl.treatment.images import treatment_images
 
@@ -47,7 +49,7 @@ def treat_property():
                 data_cadastro, data_atualizacao = extract_date(
                     doc["data_anuncio"]
                 )
-                data_coleta = extract_date(doc["data_coleta_imovel"])[0]
+                data_coleta = convert_format_data(doc["data_coleta_imovel"])
 
                 street, number, district = extract_address(doc["endereco"])
 

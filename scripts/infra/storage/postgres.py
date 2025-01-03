@@ -36,6 +36,7 @@ class PostgreDB:
         self,
         collection_name: str,
         documents: list[dict],
+        if_exists: str
     ) -> None:
         engine = create_engine(self._uri)
 
@@ -48,7 +49,8 @@ class PostgreDB:
         df.to_sql(
             name=collection_name,
             con=engine,
-            if_exists="replace",
+            # if_exists="replace",
+            if_exists=if_exists,
             index=False,
         )
 

@@ -7,6 +7,15 @@ import re
 locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')
 
 
+def convert_format_data(data_string):
+    entry = "%d-%m-%Y %H:%M:%S"
+    exit = "%d/%m/%Y"
+
+    data_obj = datetime.strptime(data_string, entry)
+
+    return data_obj.strftime(exit)
+
+
 def extract_date(text: str) -> tuple[str, str]:
     date_created, date_updated = None, None
     if text:
