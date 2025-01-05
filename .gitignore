@@ -145,3 +145,5 @@ Pipfile.lock
 .vscode/
 
 rascunho_docker/
+
+note.md

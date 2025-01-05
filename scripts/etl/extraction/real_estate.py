@@ -175,7 +175,7 @@ def get_real_state():
             for error_type, ids_error in list_id_error.items():
                 mongo.update_documents(
                     query={
-                        "_id": {
+                        "imobiliaria_url": {
                             "$in": ids_error
                         }
                     },

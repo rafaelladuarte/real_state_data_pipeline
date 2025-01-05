@@ -14,7 +14,7 @@ def treat_data_to_postgres():
     postgres = PostgreDB(
         uri=get_secret_value("POSTGRESQL_URI")
     )
-    postgres._create_database()
+    # postgres._create_database()
 
     list_collection_names = [
         "treat_imoveis",

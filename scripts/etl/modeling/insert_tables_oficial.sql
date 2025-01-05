@@ -1,6 +1,7 @@
 -- Insere valores na tabela dimensão "tipo_imovel";
 INSERT INTO public."tipo_imovel"(tipo)
 VALUES
+    ('teste'),
   	('casas'),
 	('apartamentos'),
 	('quitinetes'),
@@ -12,6 +13,7 @@ VALUES
 -- Insere valores na tabela dimensão "modo_imovel";
 INSERT INTO public."modo_imovel"(modo)
 VALUES
+    ('teste'),
   	('venda'),
 	('aluguel');
 
@@ -70,24 +72,26 @@ ON CONFLICT (id_imobiliaria) DO NOTHING;
 -- Insere valores na tabela fato "imovel";
 INSERT INTO public.imovel(
     id_imovel,
-	id_imobiliaria,
-	id_endereco_imovel,
-	id_tipo_imovel,
-	id_modo_imovel,
-	titulo_imovel,
-	descricao_imovel,
-	data_cadastro_imovel,
-	data_atualizacao_imovel,
-	imagens_imovel,
-	telefone_imovel,
-	preco,
-	quantidade_quartos,
-	quantidade_banheiros,
-	quantidade_vagas,
-	quantidade_suites,
-	outros,
-	area_m2,
-	data_coleta_imovel
+    id_imobiliaria,
+    id_endereco_imovel,
+    id_tipo_imovel,
+    id_modo_imovel,
+    titulo_imovel,
+    descricao_imovel,
+    data_cadastro_imovel,
+    data_atualizacao_imovel,
+    imagens_imovel,
+    telefone_imovel,
+    preco,
+    quantidade_quartos,
+    quantidade_banheiros,
+    quantidade_vagas,
+    quantidade_suites,
+    outros,
+    area_m2,
+    custo_m2,
+    faixa_area,
+    data_coleta_imovel
 )
 SELECT 
     hash,
@@ -101,33 +105,40 @@ SELECT
     TO_DATE(data_atualizacao, 'DD-MM-YYYY'),
     string_to_array(
         REPLACE(
-            REPLACE(
-                imagens, '{', ''
-            ),
+            REPLACE(imagens, '{', ''),
             '}', ''
         ), ','
-    ) AS imagens,
-	string_to_array(
+    ) AS imagens_imovel,
+    string_to_array(
         REPLACE(
-            REPLACE(
-                A.telefone, '{', ''
-            ),
+            REPLACE(A.telefone, '{', ''),
             '}', ''
         ), ','
-    ) AS telefone,
+    ) AS telefone_imovel,
     preco::INTEGER,
     quartos::INTEGER,
     banheiro::INTEGER,
     vagas::INTEGER,
     suite::INTEGER,
-	replace(
-	replace(
-            replace(outros, '"', ''),
+    REPLACE(
+        REPLACE(
+            REPLACE(outros, '"', ''),
             '{', ''
         ),
         '}', ''
     ) AS outros,
-    area::INTEGER,
+    area::INTEGER AS area_m2,
+    CASE 
+        WHEN area::INTEGER > 0 THEN preco::NUMERIC / area::INTEGER
+        ELSE NULL
+    END AS custo_m2,
+    CASE
+        WHEN area::INTEGER <= 50 THEN 'Até 50m²'
+        WHEN area::INTEGER BETWEEN 51 AND 100 THEN '51-100m²'
+        WHEN area::INTEGER BETWEEN 101 AND 150 THEN '101-150m²'
+        WHEN area::INTEGER BETWEEN 151 AND 200 THEN '151-200m²'
+        ELSE 'Acima de 200m²'
+    END AS faixa_area;
     TO_DATE(data_coleta_imovel, 'DD-MM-YYYY')
 FROM 
     public._treat_imoveis A
@@ -139,4 +150,4 @@ INNER JOIN
     public.tipo_imovel D ON LOWER(A.tipo_imovel) = LOWER(D.tipo)
 INNER JOIN 
     public.modo_imovel E ON LOWER(A.modo_imovel) = LOWER(E.modo)
-ON CONFLICT (id_imovel) DO NOTHING;;
+ON CONFLICT (id_imovel) DO NOTHING;

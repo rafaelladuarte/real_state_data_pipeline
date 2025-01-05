@@ -43,7 +43,7 @@ def treat_property():
         list_id_error = defaultdict(list)
         list_id = []
 
-        for doc in docs[:10]:
+        for doc in docs[:50]:
             try:
                 list_id.append(doc["_id"])
                 data_cadastro, data_atualizacao = extract_date(
